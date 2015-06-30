@@ -29,7 +29,8 @@ informative:
 
 --- abstract
 
-TODO
+This draft propose a way for enterprise firewalls to handle WebRTC
+media traffic. 
 
 --- middle
 
@@ -37,14 +38,64 @@ TODO
 Overview 
 =========
 
-
-The problem
-============
-
-
 WebRTC based voice and video communications systems are becoming far
 more commone and they often need voice and video media to traverse the
-enterprise firewall. 
+enterprise firewall. This may because a device inside the firewall is
+exchanging media with a confernce bridge or gateway outside the
+firewall or it may be because a device inside the firewall is talking
+to a device in another enterprise or behind a different firewall.
+
+Firewalls admistrators have often been unwilling to open UDP due to
+some concerns evne thoguht TCP may be allowed due to it full handshake
+that verfies that a device inside the firewall really does want to
+communicate with the outside device. WebRTC media has many of the same
+characteristics as TCP and a firewall can use thoses to acheive
+security compariable to TCP connection intiated inside the firewall.
+
+WebRTC media connections all start with STUN consent checks. Thoses
+are used 
+
+
+
+Firewall Processing
+==============
+
+recognizing stun packets
+
+sugested media ports
+
+tracking the ICE consent messages
+
+creating the pin hold rules
+
+tracking media vs data
+
+Firewall Proteciton
+============
+
+blocking media over HTTPS
+
+
+Deployment Advice
+==============
+
+
+WebRTC Servers
+--------------
+
+Run on port XXX
+
+Provide a UDP turn server
+
+
+
+
+Design Consideration
+==============
+
+Why not just use TCP?
+------------------
+
 
 Security Concerns 
 ============
