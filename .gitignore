@@ -8,3 +8,5 @@
 .refcache
 .i-d-template
 venv/
+old/
+old?/
