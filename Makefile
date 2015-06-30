@@ -1,3 +1,10 @@
+
+
+hack:
+	kramdown-rfc2629 draft-jennings-rtcweb-firewall-latest.md > draft-jennings-rtcweb-firewall-latest.xml 
+	xml2rfc.old draft-jennings-rtcweb-firewall-latest.xml draft-jennings-rtcweb-firewall-latest.html
+
+
 # Original makefile from https://github.com/martinthomson/i-d-template
 
 # The following tools are used by this file.
@@ -31,7 +38,7 @@ enscript ?= enscript
 ps2pdf ?= ps2pdf 
 
 # Where to get references
-XML_RESOURCE_ORG_PREFIX ?= http://unicorn-wg.github.io/idrefs
+#XML_RESOURCE_ORG_PREFIX ?= http://unicorn-wg.github.io/idrefs
 
 
 ## Work out what to build
