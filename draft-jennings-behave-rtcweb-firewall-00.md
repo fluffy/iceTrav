@@ -43,27 +43,27 @@ Overview
 WebRTC {{I-D.ietf-rtcweb-overview}} based voice and video
 communications systems are becoming far more common and they often
 need voice and video media to traverse the enterprise firewall. This
-can happened when a device inside the firewall such as a web browser
+can happen when a device inside the firewall such as a web browser
 or phone is exchanging media with a conference bridge or gateway
 outside the firewall or it can happen when a device inside the
 firewall is talking to a device in another enterprise or behind a
 different firewall.
 
 Firewalls administrators have often been unwilling to open UDP due to
-some concerns even thought TCP may be allowed due to it full handshake
+some concerns even though TCP may be allowed due to it full handshake
 that verifies that a device inside the firewall really does want to
-communicate with the outside device. WebRTC media has many of the same
+communicate with an outside device. WebRTC media has many of the same
 characteristics as TCP and a firewall can use those to achieve
 security comparable to TCP connection initiated inside the firewall.
 
 WebRTC media connections all start with STUN consent checks. This
-draft proposes that the outbound STUN packer will create a short lived
+draft proposes that the outbound STUN packet will create a short lived
 pinhole in the firewall allowing inbound traffic on the same five
 tuple if various policy checks are passed. If a STUN packet is
 received in reply to that, the lifetime of the pinhole can be upgraded
-to 30 seconds and future STUN packers on the same 5 tuple could
-further extend the lifetime for 30 seconds from the last STUN packet
-sent from inside the firewall.
+to 30 seconds and future STUN packets on the same 5 tuple could
+further extend the lifetime for 30 seconds from the last received STUN 
+packet sent from inside the firewall.
 
 The draft also describes the types of policy checks that a firewall
 may wish to do and how they are performed including white listing
@@ -101,7 +101,7 @@ Once the firewall has received a STUN packet from inside the firewall,
 it needs to decide if wants to accept that or not. For most situations
 the firewall SHOULD accept all outbound STUN packets. This is similar
 to allow all outbound TCP flows. Some firewalls may choose to look at
-other factors including the outside UPD port and the ORIGIN attribute
+other factors including the outside Udp port and the ORIGIN attribute
 in the STUN packet.
 
 In general WebRTC media can be sent on a wide range of UDP ports but
@@ -109,11 +109,11 @@ the two ports that are commonly used are the the RTP port (5004) and
 TURN port (3478). Some firewalls MAY choose to only allow flows where
 the destination port on the outside of the firewall is one of theses.
 
-The STUN ORGIN attributes {{I-D.ietf-tram-stun-origin}} caries the
+The STUN ORIGIN attributes {{I-D.ietf-tram-stun-origin}} carries the
 origin of the web page that caused the various STUN requests. So for
 example, if a browser was on a page such at example.com and that page
-used the WebRTC calls to set up a connection, the stun requests would
-origin would include example.com. This allows the firewall to see the
+used the WebRTC calls to set up a connection, the STUN request's ORIGIN
+attrubute would include example.com. This allows the firewall to see the
 web applications (in this case, example.com) that is requesting the
 pin hole be opened. The firewall MAY have a white list or black list
 for domain in STUN ORIGIN.
@@ -138,13 +138,13 @@ Tracking media vs data
 
 WebRTC can send both audio and video as well as data
 channel. Confidential data could leave an enterprise by a video camera
-bing pointed out a document but IT departments are often more
+being pointed out a document but IT departments are often more
 concerned about the data channel. It is easy for the firewall to
 separately track the amount of RTP media and non media data for each
 flow. By looking at the first byte of the UDP message, if it is TODO
 it is non media data while if it is in the range TODO to TODO it is
 audio or video data. Network management systems on the firewall can
-track these two separately which helps identify unusually usage.
+track these two separately which helps identify unusuall usage.
 
 
 WebRTC Browsers
@@ -163,7 +163,7 @@ Blocking Media Hiding in HTTP
 The IETF is designing systems to send interactive audio and video such
 that it looks like HTTPS and HTTP to the proxies and firewalls.  The
 reasons for doing this is that sometimes the proxies and firewalls
-allow this to work while the mechanism and channels designed for
+allow this to work while the mechanisms and channels designed for
 sending audio and video data have been explicitly disabled by the
 firewall administrators. Many firewall administrators feel this
 circumvents the policy they are trying to enforce and desire way to
@@ -188,7 +188,7 @@ WebRTC Servers
 --------------
 
 WebRTC media server and TURN server with public IP address that can
-receive incoming packets from anywhere are the internet are suggest to
+receive incoming packets from anywhere on the Internet are suggested to
 listen for UDP on ports 53 (DNS), 123(NTP), and 5004 for RTP media
 servers and 3478 for TURN servers. UDP destined to port 53 or 123
 often is allowed by firewalls that otherwise block UDP.
@@ -238,7 +238,7 @@ of the firewall. The major concerns that are raised include:
    the firewall has confirmed that it wants to talk to the thing
    outside.
 
-2. Incoming UPD pinholes allow out of band packets to be spoofed into
+2. Incoming UDP pinholes allow out of band packets to be spoofed into
    the connecting as there is no equivalent of TCP sequence number to
    check
 
