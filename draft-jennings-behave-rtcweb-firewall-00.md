@@ -41,11 +41,12 @@ middleboxes.
 --- middle
 
 
-Overview 
+Problem Statement
 =========
 
 WebRTC {{I-D.ietf-rtcweb-overview}} based voice and video
-communications systems are becoming far more common and they often
+communications systems are becoming far more common inside of
+enterprises and they often
 need voice and video media to traverse the enterprise firewall. This
 can happen when a device inside the firewall such as a web browser
 or phone is exchanging media with a conference bridge or gateway
@@ -53,26 +54,129 @@ outside the firewall or it can happen when a device inside the
 firewall is talking to a device in another enterprise or behind a
 different firewall.
 
-Firewalls administrators have often been unwilling to open UDP due to
-some concerns even though TCP may be allowed due to it full handshake
-that verifies that a device inside the firewall really does want to
-communicate with an outside device. WebRTC media has many of the same
-characteristics as TCP and a firewall can use those to achieve
-security comparable to TCP connection initiated inside the firewall.
+This problem is not unique to webRTC media of course. It is common
+practice for enterprise administrators to block outbound UDP through
+the corporate firewall. This is for several reasons:
 
-WebRTC media connections all start with STUN consent checks. This
-draft proposes that the outbound STUN packet will create a short lived
-pinhole in the firewall allowing inbound traffic on the same five
-tuple if various policy checks are passed. If a STUN packet is
-received in reply to that, the lifetime of the pinhole can be upgraded
-to 30 seconds and future STUN packets on the same 5 tuple could
-further extend the lifetime for 30 seconds from the last received STUN 
-packet sent from inside the firewall.
+1. The lack of any kind of return messages means that there is no way
+to know that the recipient of the UDP traffic really wants
+it. Infected computers within the enterprise could utilize UDP as the
+source of a DDoS attack. If the firewall permitted such outbound
+traffic, the enterprise could in effect be a contributing source to
+such an attack. By blocking UDP, the enterprise IT admin assures that
+this cannot happen - at least not to external targets.
 
-The draft also describes the types of policy checks that a firewall
-may wish to do and how they are performed including white listing
-specific web sites that are allowed to use WebRTC communications.
+2. There have been prior attacks that have utilized UDP as a
+command and control channel for orchestrating DDoS attacks. At the
+time, UDP had little usage within the enterprise (most VoIP was
+internal to the enterprise when it existed at all). Consequently,
+infosec departments deemed it safer to block UDP outright in order to
+prevent such a further incident.
 
+3. Many IT administrators enable various packet inspection operations
+on traffic flowing through the firewall. High volume UDP traffic -
+such as voice or video - can
+be costly to inspect. As such, in cases where there is a need for
+traversal of such traffic, IT has preferred to deploy an SBC that, in
+essence, verifies that the traffic is VoIP and authorizes its
+egress. The IT administrator then enables traffic to/from the SBC
+through the firewall. In otherwords, VoIP authorization is delegated
+to an outsourced SBC. 
+
+As more and more IP communications services move to cloud, there is an
+increased need for VoIP traffic to traverse the enterprise
+firewall. At the same time, the entire point of a cloud service is
+that it does not require deployment of premises
+infrastructure, making SBC-based solutions less desireable. An
+alternative solution that has been historically used is to enable
+outbound UDP in the firewall to specific IP addresses, corresponding
+to the external service (TURN servers or conference servers) that the
+enteprrise wishes to authorize. With more applications running on
+virtual machines within cloud compute platforms like Amazon EC2, IP
+addresses are decreasingly usable as identifiers for a
+service. VMs running TURN servers or conferencing servers may be
+established and torn down by the day, hour or even minute, with
+continuously changing IP addresses. Given the multitenant nature of
+such providers, IT departments are unwilling to whitelist the IP
+addresses for the entire block used by such providers.
+
+
+Consequently, there is a growing need for solutions
+that allow VoIP traversal through the corporate firewall that
+alleviate the concerns above. This issue is further exacerbated by the
+growing adoption of webRTC by enterprise applications, which provide a
+ready source of RTP traffic which often needs to traverse the
+firewall.
+
+Solution Requirements
+=====================
+
+We believe the solution must meet the following requirements:
+
+REQ-1: The solution must enable traversal of real-time media without
+requiring deployment of additional media intermediaries on premise
+(e.g., no SBC required)
+
+REQ-2: The solution must not require the whitelisting of specific
+external IP addresses
+
+REQ-3: The solution must enable the enterprise to be sure that the
+receiving party of the traffic desires the traffic
+
+REQ-4: The solution must work with P2P calls between users in
+different enterprises without requiring a TURN server
+
+REQ-5: The solution must work with cloud services external to the
+enteprise which terminate media on servers, such as conference
+servers, voicemail servers, recording servers, and so on.
+
+REQ-6: The solution must not require decryption of either signaling or
+media traffic at the firewall or at any other intermediary
+
+REQ-7: The solution must allow the IT department to easily make policy
+decisions about which applications are allowed, or not allowed, to
+traverse the firewall
+
+REQ-8: The solution must not require DPI of ever single UDP packet
+that traverses the firewall
+
+REQ-9: The solution must provide a minimum level of proof that the
+traffic is RTP and not something else
+
+REQ-10: The solution must work with webRTC traffic. Note that solving
+this for non-webRTC is a non-requirement.
+
+
+Solution Overview
+=================
+
+Many of the reasons for blocking UDP at the corporate firewall have
+their origins in the lack of a three way handshake for UDP
+traffic. TCPs three-way handshake ensures that the receiving part of
+the connection desires the traffic. Similarly, HTTP traffic easily
+traverses the firewall since it provides application identification
+information in the URL.
+
+Consequently, the solution proposed here relies on the ICE
+connectivity checks, which provide a similar handshake and ensure
+consent of the remote party. When a firewall sees an outbound UDP
+packet on a 5-tuple which is not yet authorized, it begins looking for
+STUN packets (as identified by the STUN magic cookie). Any outbound
+packet that is not a STUN packet is discarded. Once an outbound STUN
+packet is identified, the 5-tuple is put in a pending state, and the
+firewall begins looking for STUN packets within inbound UDP
+packets. When it sees one, it matches the transaction IDs to ensure
+that they are correlated. Once matched, the 5-tuple is placed into an
+authorized state, and UDP traffic is allowed to freely traverse. In
+this state, the firewall can optionally validate that inbound and
+outbound packets are RTP [[uhh: this wont work for the data
+channel... and the firewall cannot really know whether this is the
+data channel or not. maybe we need a 'next protocol' field within
+ICE??]].
+
+In addition, the initial outbound STUN packets contain the STUN ORIGIN
+field which the firewall can use to make an authorization decision on
+the application. 
 
 
 Firewall Processing
