@@ -93,8 +93,6 @@ correct magic cookie they may classify them as STUN packets. Firewalls
 that which desire less false positives MAY also check the FINGERPRINT
 attribute is correct.
 
-TODO - Check that WebRTC is required to send FINGERPRINT.
-
 
 Policy decision
 --------------
@@ -143,8 +141,8 @@ channel. Confidential data could leave an enterprise by a video camera
 bing pointed out a document but IT departments are often more
 concerned about the data channel. It is easy for the firewall to
 separately track the amount of RTP media and non media data for each
-flow. By looking at the first byte of the UDP message, if it is XXXX
-it is non media data while if it is in the range XXX to XXX it is
+flow. By looking at the first byte of the UDP message, if it is TODO
+it is non media data while if it is in the range TODO to TODO it is
 audio or video data. Network management systems on the firewall can
 track these two separately which helps identify unusually usage.
 
@@ -152,12 +150,11 @@ track these two separately which helps identify unusually usage.
 WebRTC Browsers
 ===============
 
-Note: The text here needs to eventually move to other specifications
-but it is included here for now to make it easy to see the whole
-system in one document.
-
 The WebRTC specification already requires browser to include the
-FINGERPRINT and ORIGIN attributes.
+FINGERPRINT and for this to work correctly the specs would need to
+also require the use of the STUN ORIGIN attributes.
+
+TODO - Check that WebRTC is required to send FINGERPRINT. 
 
 
 Blocking Media Hiding in HTTP
