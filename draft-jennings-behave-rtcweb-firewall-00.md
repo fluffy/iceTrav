@@ -22,7 +22,8 @@ author:
     email: fluffy@iii.ca
 
 normative:
-  RFC2119:
+  I-D.ietf-tram-stun-origin:
+
 
 informative:
   I-D.ietf-rtcweb-overview:
@@ -39,7 +40,7 @@ media traffic.
 Overview 
 =========
 
-WebRTC based voice and video communications systems are becoming far
+WebRTC {{I-D.ietf-rtcweb-overview}}  based voice and video communications systems are becoming far
 more commone and they often need voice and video media to traverse the
 enterprise firewall. This may because a device inside the firewall is
 exchanging media with a confernce bridge or gateway outside the
@@ -90,7 +91,7 @@ policy decsion
 
 Once the firewall has received a STUN packet from inside the firewall,
 it needs to decide if wants to accept that or not. For most
-situtations the fiewall SHOULD accept all outbound SUN packets. This
+situtations the fiewall SHOULD accept all outbound STUN packets. This
 is simular to allow all outbound TCP flows. Some firewalls may choose
 to look at ohter factors incluidng the outside UPD port and the
 application-name attribute in the STUN packet.
@@ -100,8 +101,14 @@ the two ports that are commonly used are the the RTP port (5004) and
 TURN port (3478). Some firwalls MAY choose to only allow flows where
 the
 
-Section XXXX defines a way for the STUN message to carry the name of
-the appliciaon making the STUN request.
+The STUN ORGIN attributes {{I-D.ietf-tram-stun-origin}} caries the
+orgin of the web page that caused the varios STUN requests. So for
+example,  if a browser was on a page suchs at example.com and that
+page used the WebRTC calls to set up a connection, the stun requests
+would orgin would includ example.com. This allows the firewall to see
+the web applications (in this case, example.com) that is requesting
+the pin hole be opend. The firewall MAY have a white list or black
+list for domain in STUN ORIGIN. 
 
 
 creating the pin hold rules
@@ -193,19 +200,6 @@ monitoring them to detect whn things have gone wrong can be very
 valuable.
 
 
-STUN Externtions
-===============
-
-This draft defines a new STUN attribte called "application-name" that
-is comprehension otpional and allows a web brower to insert in the
-STUN request the trusted orgin for the javascript that caused the STUN
-message to be created. Non browser capplications can carry a domain
-name that indentifies the opion.
-
-TODO - spec out the details of this but basically it will just be a
-length field, then the string with domain name folloed by padding to
-make it end onf a 32 bit boundary.
-
 Design Consideration
 ==============
 
@@ -246,7 +240,6 @@ TODO
 
 Ref and exlain how fits in with reddy-rtcweb-auth-fw-traversla
 
-change name to behave 
 
 Acknowledgements
 ================
