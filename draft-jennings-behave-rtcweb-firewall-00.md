@@ -31,8 +31,12 @@ informative:
 
 --- abstract
 
-This draft propose a way for enterprise firewalls to handle WebRTC
-media traffic. 
+Traversal of RTP through corporate firewalls has traditionally been
+complex, requiring the deployment of Session Border Controllers (SBCs)
+or wide open pinholes. This draft proposes a simple technique that
+allows webRTC based RTP traffic to traverse firewalls without complex
+firewall configuration and without deployment of SBCs or other
+middleboxes. 
 
 --- middle
 
