@@ -121,7 +121,7 @@ pin hole be opened. The firewall MAY have a white list or black list
 for domain in STUN ORIGIN.
 
 
-Creating the pin hold rules
+Creating the pin hole rules
 ---------------------------
 
 Once a STUN packets it accepted, the firewall MUST create a temporary
@@ -132,6 +132,8 @@ least 30 seconds from last accepted STUN packet from inside the
 firewall. Once extended to 30 seconds, any additional accepted STUN
 packets from inside the firewall MUST extend the lifetime of the rule
 by at least 30 seconds from the time of that packet was received.
+
+
 
 Tracking media vs data
 ----------------------
@@ -194,6 +196,13 @@ listen for UDP on ports 53 (DNS), 123(NTP), and 5004 for RTP media
 servers and 3478 for TURN servers. UDP destined to port 53 or 123
 often is allowed by firewalls that otherwise block UDP.
 
+Deploying media or TURN servers on a single any-cast IP address also
+makes it easier for firewall administrators to whitelist the
+address. Concerns have been raised that two packets sent from the same
+host to a given any-cast address may get delivered to different
+servers.  This is certainly possible in theory but in practice it does
+not seem be happen in limited experiments done so far. 
+
 
 Firewall Admins
 ---------------
@@ -209,6 +218,7 @@ into what is going on and can no longer protect their users when their
 computers become compromised. Allowing things that users want to use
 to work and monitoring them to detect when things have gone wrong can
 be very valuable.
+
 
 
 Design Consideration
