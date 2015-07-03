@@ -1,8 +1,8 @@
 
 
 hack:
-	kramdown-rfc2629 draft-jennings-rtcweb-firewall-latest.md > draft-jennings-rtcweb-firewall-latest.xml 
-	xml2rfc.old draft-jennings-rtcweb-firewall-latest.xml draft-jennings-rtcweb-firewall-latest.html
+	kramdown-rfc2629 draft-jennings-behave-rtcweb-firewall-00.md > draft-jennings-behave-rtcweb-firewall-00.xml 
+	xml2rfc.old draft-jennings-behave-rtcweb-firewall-00.xml draft-jennings-behave-rtcweb-firewall-00.html
 
 
 # Original makefile from https://github.com/martinthomson/i-d-template
