@@ -23,18 +23,18 @@ author:
 
 normative:
   I-D.ietf-tram-stun-origin:
-
-
+#I-D.ietf-rtcweb-stun-consent-freshness:
+ 
 informative:
   I-D.ietf-rtcweb-overview:
-
-
+  I-D.reddy-rtcweb-stun-auth-fw-traversal:
+  RFC6407:
 --- abstract
 
 Traversal of RTP through corporate firewalls has traditionally been
 complex, requiring the deployment of Session Border Controllers (SBCs)
 or wide open pinholes. This draft proposes a simple technique that
-allows webRTC based RTP traffic to traverse firewalls without complex
+allows WebRTC based RTP traffic to traverse firewalls without complex
 firewall configuration and without deployment of SBCs or other
 middleboxes. 
 
@@ -54,7 +54,7 @@ outside the firewall or it can happen when a device inside the
 firewall is talking to a device in another enterprise or behind a
 different firewall.
 
-This problem is not unique to webRTC media of course. It is common
+This problem is not unique to WebRTC media of course. It is common
 practice for enterprise administrators to block outbound UDP through
 the corporate firewall. This is for several reasons:
 
@@ -91,7 +91,7 @@ infrastructure, making SBC-based solutions less desireable. An
 alternative solution that has been historically used is to enable
 outbound UDP in the firewall to specific IP addresses, corresponding
 to the external service (TURN servers or conference servers) that the
-enteprrise wishes to authorize. With more applications running on
+enteprise wishes to authorize. With more applications running on
 virtual machines within cloud compute platforms like Amazon EC2, IP
 addresses are decreasingly usable as identifiers for a
 service. VMs running TURN servers or conferencing servers may be
@@ -104,7 +104,7 @@ addresses for the entire block used by such providers.
 Consequently, there is a growing need for solutions
 that allow VoIP traversal through the corporate firewall that
 alleviate the concerns above. This issue is further exacerbated by the
-growing adoption of webRTC by enterprise applications, which provide a
+growing adoption of WebRTC by enterprise applications, which provide a
 ready source of RTP traffic which often needs to traverse the
 firewall.
 
@@ -143,8 +143,8 @@ that traverses the firewall
 REQ-9: The solution must provide a minimum level of proof that the
 traffic is RTP and not something else
 
-REQ-10: The solution must work with webRTC traffic. Note that solving
-this for non-webRTC is a non-requirement.
+REQ-10: The solution must work with WebRTC traffic. Note that solving
+this for non-WebRTC is a non-requirement.
 
 
 Solution Overview
@@ -240,7 +240,6 @@ packets from inside the firewall MUST extend the lifetime of the rule
 by at least 30 seconds from the time of that packet was received.
 
 
-
 Tracking media vs data
 ----------------------
 
@@ -334,9 +333,8 @@ Why not just use TCP?
 
 TODO
 
-
 Security Concerns 
-============
+=================
 
 
 Enterprises have a range of concerns around WebRTC traffic traversal
@@ -363,10 +361,29 @@ into the company
 attacker to upload private files from inside the firewall
 
 
-TODO 
-=====
+Alternate Approaches 
+=====================
 
-Ref and explain how fits in with reddy-rtcweb-auth-fw-traversla
+{{I-D.reddy-rtcweb-stun-auth-fw-traversal}} attempts to solve a similar
+problem by proposing a new comprehension-optional FW-FLOWDATA STUN attribute
+as part of ICE Connectivity checks enabling the firewall to permit outgoing
+UDP flows across the firewall. FW-FLOWDATA STUN provides necessary
+information, such as lifetime, candidate information , enabling a firewall
+to apply the required policy rules. However, {{I-D.reddy-rtcweb-stun-auth-fw-traversal}}
+requires establishing shared keys aross the firewall(s) and the WebRTC server 
+for successfully verifying the authenticity of the FW-FLOWDATA information.
+In summary, we believe {{I-D.reddy-rtcweb-stun-auth-fw-traversal}} to have 
+following short-comings
+
+1. Requiring a tight coupling between the application server (WebRTC server) and
+firewall(s)
+
+2. Requiring additional efforts for Firewall Admins within a enterprise to distribute 
+and maintain the shared authentication keys needed to generate authentication
+tag for the FW-FLOWDATA attribute.
+
+3. {{I-D.reddy-rtcweb-stun-auth-fw-traversal}} doesn't apply for 
+distributing keys across firewalls in different administrative domains.
 
 
 Acknowledgements
