@@ -23,6 +23,7 @@ author:
 
 normative:
   I-D.ietf-tram-stun-origin:
+  I-D.ietf-avtcore-rfc5764-mux-fixes:
 #I-D.ietf-rtcweb-stun-consent-freshness:
  
 informative:
@@ -239,6 +240,8 @@ firewall. Once extended to 30 seconds, any additional accepted STUN
 packets from inside the firewall MUST extend the lifetime of the rule
 by at least 30 seconds from the time of that packet was received.
 
+TODO - Should we add a note on consent freshness draft
+
 
 Tracking media vs data
 ----------------------
@@ -248,10 +251,12 @@ channel. Confidential data could leave an enterprise by a video camera
 being pointed out a document but IT departments are often more
 concerned about the data channel. It is easy for the firewall to
 separately track the amount of RTP media and non media data for each
-flow. By looking at the first byte of the UDP message, if it is TODO
-it is non media data while if it is in the range TODO to TODO it is
-audio or video data. Network management systems on the firewall can
-track these two separately which helps identify unusuall usage.
+flow. By looking at the first byte of the UDP message, if it is  
+if it is 23 it is non media data while if it is in the range 20 to 63 
+(but not 23) it is audio or video data as defined in 
+{{I-D.ietf-avtcore-rfc5764-mux-fixes}}. Network management systems on 
+the  firewall can track these two separately which helps identify 
+unusual usage.
 
 
 WebRTC Browsers
