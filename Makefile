@@ -1,11 +1,4 @@
 
-
-hack:
-	kramdown-rfc2629 draft-jennings-behave-rtcweb-firewall-00.md > draft-jennings-behave-rtcweb-firewall-00.xml 
-	xml2rfc draft-jennings-behave-rtcweb-firewall-00.xml  --html draft-jennings-behave-rtcweb-firewall-00.html
-	xml2rfc draft-jennings-behave-rtcweb-firewall-00.xml draft-jennings-behave-rtcweb-firewall-00.txt
-
-
 # Original makefile from https://github.com/martinthomson/i-d-template
 
 # The following tools are used by this file.
@@ -109,7 +102,6 @@ endif
 
 .INTERMEDIATE: $(draft).xml
 %.xml: %.md
-	XML_RESOURCE_ORG_PREFIX=$(XML_RESOURCE_ORG_PREFIX) \
 	  $(kramdown-rfc2629) $< > $@
 
 %.xml: %.org
@@ -118,10 +110,8 @@ endif
 %.txt: %.xml
 	$(xml2rfc) $< -o $@ --text
 
-%.htmltmp: %.xml
+%.html: %.xml
 	$(xml2rfc) $< -o $@ --html
-%.html: %.htmltmp lib/addstyle.sed lib/style.css
-	sed -f lib/addstyle.sed $< > $@
 
 %.pdf: %.txt
 	$(enscript) --margins 76::76: -B -q -p - $^ | $(ps2pdf) - $@
