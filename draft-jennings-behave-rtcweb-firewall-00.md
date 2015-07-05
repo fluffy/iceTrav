@@ -103,7 +103,7 @@ infrastructure, making SBC-based solutions less desirable. An
 alternative solution that has been historically used is to enable
 outbound UDP in the firewall to specific IP addresses, corresponding
 to the external service (TURN servers or conference servers) that the
-enteprise wishes to authorize. With more applications running on
+enterprise wishes to authorize. With more applications running on
 virtual machines within cloud compute platforms like Amazon EC2, IP
 addresses are decreasingly usable as identifiers for a
 service. VMs running TURN servers or conferencing servers may be
@@ -139,7 +139,7 @@ REQ-4: The solution must work with P2P calls between users in
 different enterprises without requiring a TURN server
 
 REQ-5: The solution must work with cloud services external to the
-enteprise which terminate media on servers, such as conference
+enterprise which terminate media on servers, such as conference
 servers, voicemail servers, recording servers, and so on.
 
 REQ-6: The solution must not require decryption of either signaling or
@@ -275,7 +275,7 @@ Open Issue: Does add the ORIGIN reduce user privacy. Consider the
 following case, the user goes to https://facebook.com and initiated a
 call with another facebook user. The domain facebook.com will appear
 (unencrypted) in the STUN packets sent from the browser to the
-faceboks TURN server. Anyone along the network path could tell that
+facebook's TURN server. Anyone along the network path could tell that
 the user is using facebook's TURN server. However, when the original
 TLS connection for the HTTP was made, the Server Name Indication (SNI)
 in the TLS of the HTTPS connection also revealed facebook.com and this
