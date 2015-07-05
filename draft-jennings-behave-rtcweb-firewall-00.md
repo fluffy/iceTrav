@@ -20,16 +20,27 @@ author:
     name: Cullen Jennings
     organization: Cisco
     email: fluffy@iii.ca
+ -
+    ins: S. Nandakumar 
+    name: Suhas Nandakumar 
+    organization: Cisco 
+    email: snandaku@cisco.com 
+ -
+    ins: J. Rosenberg 
+    name: Jonathan Rosenberg
+    organization: Cisco 
+    email: jdrosen@cisco.com
+
 
 normative:
   I-D.ietf-tram-stun-origin:
   I-D.ietf-avtcore-rfc5764-mux-fixes:
-#I-D.ietf-rtcweb-stun-consent-freshness:
  
 informative:
   I-D.ietf-rtcweb-overview:
+  I-D.ietf-rtcweb-stun-consent-freshness:
   I-D.reddy-rtcweb-stun-auth-fw-traversal:
-  RFC6407:
+
 --- abstract
 
 Traversal of RTP through corporate firewalls has traditionally been
@@ -88,7 +99,7 @@ As more and more IP communications services move to cloud, there is an
 increased need for VoIP traffic to traverse the enterprise
 firewall. At the same time, the entire point of a cloud service is
 that it does not require deployment of premises
-infrastructure, making SBC-based solutions less desireable. An
+infrastructure, making SBC-based solutions less desirable. An
 alternative solution that has been historically used is to enable
 outbound UDP in the firewall to specific IP addresses, corresponding
 to the external service (TURN servers or conference servers) that the
@@ -168,12 +179,7 @@ packet is identified, the 5-tuple is put in a pending state, and the
 firewall begins looking for STUN packets within inbound UDP
 packets. When it sees one, it matches the transaction IDs to ensure
 that they are correlated. Once matched, the 5-tuple is placed into an
-authorized state, and UDP traffic is allowed to freely traverse. In
-this state, the firewall can optionally validate that inbound and
-outbound packets are RTP [[uhh: this wont work for the data
-channel... and the firewall cannot really know whether this is the
-data channel or not. maybe we need a 'next protocol' field within
-ICE??]].
+authorized state, and UDP traffic is allowed to freely traverse.
 
 In addition, the initial outbound STUN packets contain the STUN ORIGIN
 field which the firewall can use to make an authorization decision on
@@ -210,7 +216,7 @@ Once the firewall has received a STUN packet from inside the firewall,
 it needs to decide if wants to accept that or not. For most situations
 the firewall SHOULD accept all outbound STUN packets. This is similar
 to allow all outbound TCP flows. Some firewalls may choose to look at
-other factors including the outside Udp port and the ORIGIN attribute
+other factors including the outside UDP port and the ORIGIN attribute
 in the STUN packet.
 
 In general WebRTC media can be sent on a wide range of UDP ports but
@@ -222,7 +228,7 @@ The STUN ORIGIN attributes {{I-D.ietf-tram-stun-origin}} carries the
 origin of the web page that caused the various STUN requests. So for
 example, if a browser was on a page such at example.com and that page
 used the WebRTC calls to set up a connection, the STUN request's ORIGIN
-attrubute would include example.com. This allows the firewall to see the
+attribute would include example.com. This allows the firewall to see the
 web applications (in this case, example.com) that is requesting the
 pin hole be opened. The firewall MAY have a white list or black list
 for domain in STUN ORIGIN.
@@ -236,11 +242,11 @@ rules that allows incoming and outgoing packets for that 5 tuple for
 at least 5 seconds. If in that 5 seconds, a response is received to
 the STUN request, the lifetime of the rule must be extended to at
 least 30 seconds from last accepted STUN packet from inside the
-firewall. Once extended to 30 seconds, any additional accepted STUN
+firewall. Once extended to 30 seconds, any additional UDP
 packets from inside the firewall MUST extend the lifetime of the rule
-by at least 30 seconds from the time of that packet was received.
-
-TODO - Should we add a note on consent freshness draft
+by at least 30 seconds from the time of that packet was received. The
+procedures in {{I-D.ietf-rtcweb-stun-consent-freshness}} will ensure
+that an outbound packet is sent at least every 30 seconds. 
 
 
 Tracking media vs data
@@ -251,22 +257,30 @@ channel. Confidential data could leave an enterprise by a video camera
 being pointed out a document but IT departments are often more
 concerned about the data channel. It is easy for the firewall to
 separately track the amount of RTP media and non media data for each
-flow. By looking at the first byte of the UDP message, if it is  
-if it is 23 it is non media data while if it is in the range 20 to 63 
-(but not 23) it is audio or video data as defined in 
+WebRTC flow. By looking at the first byte of the UDP message,
+if it is 23 it is non media data while if it is in the range 127 to 192 
+it is audio or video data. More information about this can be found in
 {{I-D.ietf-avtcore-rfc5764-mux-fixes}}. Network management systems on 
-the  firewall can track these two separately which helps identify 
+the firewall can track these two separately which can help identify 
 unusual usage.
 
 
 WebRTC Browsers
 ===============
 
-The WebRTC specification already requires browser to include the
-FINGERPRINT and for this to work correctly the specs would need to
-also require the use of the STUN ORIGIN attributes.
+This specification would require browsers to include the FINGERPRINT
+and ORIGIN attributes in STUN for this to work correctly.
 
-TODO - Check that WebRTC is required to send FINGERPRINT. 
+Open Issue: Does add the ORIGIN reduce user privacy. Consider the
+following case, the user goes to https://facebook.com and initiated a
+call with another facebook user. The domain facebook.com will appear
+(unencrypted) in the STUN packets sent from the browser to the
+faceboks TURN server. Anyone along the network path could tell that
+the user is using facebook's TURN server. However, when the original
+TLS connection for the HTTP was made, the Server Name Indication (SNI)
+in the TLS of the HTTPS connection also revealed facebook.com and this
+was done for largely the same reasons, so the Firewall would be able
+to see which applications were using the network.
 
 
 Blocking Media Hiding in HTTP
@@ -304,13 +318,6 @@ receive incoming packets from anywhere on the Internet are suggested to
 listen for UDP on ports 53 (DNS), 123(NTP), and 5004 for RTP media
 servers and 3478 for TURN servers. UDP destined to port 53 or 123
 often is allowed by firewalls that otherwise block UDP.
-
-Deploying media or TURN servers on a single any-cast IP address also
-makes it easier for firewall administrators to whitelist the
-address. Concerns have been raised that two packets sent from the same
-host to a given any-cast address may get delivered to different
-servers.  This is certainly possible in theory but in practice it does
-not seem be happen in limited experiments done so far. 
 
 
 Firewall Admins
@@ -369,13 +376,16 @@ attacker to upload private files from inside the firewall
 Alternate Approaches 
 =====================
 
+Firewall Auth Tokens
+------------------
+
 {{I-D.reddy-rtcweb-stun-auth-fw-traversal}} attempts to solve a similar
 problem by proposing a new comprehension-optional FW-FLOWDATA STUN attribute
 as part of ICE Connectivity checks enabling the firewall to permit outgoing
 UDP flows across the firewall. FW-FLOWDATA STUN provides necessary
 information, such as lifetime, candidate information , enabling a firewall
 to apply the required policy rules. However, {{I-D.reddy-rtcweb-stun-auth-fw-traversal}}
-requires establishing shared keys aross the firewall(s) and the WebRTC server 
+requires establishing shared keys across the firewall(s) and the WebRTC server 
 for successfully verifying the authenticity of the FW-FLOWDATA information.
 In summary, we believe {{I-D.reddy-rtcweb-stun-auth-fw-traversal}} to have 
 following short-comings
@@ -389,6 +399,16 @@ tag for the FW-FLOWDATA attribute.
 
 3. {{I-D.reddy-rtcweb-stun-auth-fw-traversal}} doesn't apply for 
 distributing keys across firewalls in different administrative domains.
+
+Any Cast Whitelist
+---------------
+
+Deploying media or TURN servers on a single any-cast IP address also 
+makes it easier for firewall administrators to whitelist the 
+address. Concerns have been raised that two packets sent from the same 
+host to a given any-cast address may get delivered to different 
+servers.  This is certainly possible in theory but in practice it does 
+not seem be happen in limited experiments done so far. 
 
 
 Acknowledgements
