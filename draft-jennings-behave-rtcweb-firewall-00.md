@@ -224,7 +224,7 @@ the two ports that are commonly used are the the RTP port (5004) and
 TURN port (3478). Some firewalls MAY choose to only allow flows where
 the destination port on the outside of the firewall is one of theses.
 
-The STUN ORIGIN attributes {{I-D.ietf-tram-stun-origin}} carries the
+The STUN ORIGIN attribute {{I-D.ietf-tram-stun-origin}} carries the
 origin of the web page that caused the various STUN requests. So for
 example, if a browser was on a page such at example.com and that page
 used the WebRTC calls to set up a connection, the STUN request's ORIGIN
@@ -237,8 +237,8 @@ for domain in STUN ORIGIN.
 Creating the pin hole rules
 ---------------------------
 
-Once a STUN packets it accepted, the firewall MUST create a temporary
-rules that allows incoming and outgoing packets for that 5 tuple for
+Once a STUN packet is accepted, the firewall MUST create a temporary
+rule that allows incoming and outgoing packets for that 5 tuple for
 at least 5 seconds. If in that 5 seconds, a response is received to
 the STUN request, the lifetime of the rule must be extended to at
 least 30 seconds from last accepted STUN packet from inside the
