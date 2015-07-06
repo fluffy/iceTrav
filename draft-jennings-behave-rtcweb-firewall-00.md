@@ -149,7 +149,7 @@ REQ-7: The solution must allow the IT department to easily make policy
 decisions about which applications are allowed, or not allowed, to
 traverse the firewall
 
-REQ-8: The solution must not require DPI of ever single UDP packet
+REQ-8: The solution must not require DPI of every single UDP packet
 that traverses the firewall
 
 REQ-9: The solution must provide a minimum level of proof that the
@@ -164,7 +164,7 @@ Solution Overview
 
 Many of the reasons for blocking UDP at the corporate firewall have
 their origins in the lack of a three way handshake for UDP
-traffic. TCPs three-way handshake ensures that the receiving part of
+traffic. TCP's three-way handshake ensures that the receiving party of
 the connection desires the traffic. Similarly, HTTP traffic easily
 traverses the firewall since it provides application identification
 information in the URL.
@@ -176,7 +176,7 @@ packet on a 5-tuple which is not yet authorized, it begins looking for
 STUN packets (as identified by the STUN magic cookie). Any outbound
 packet that is not a STUN packet is discarded. Once an outbound STUN
 packet is identified, the 5-tuple is put in a pending state, and the
-firewall begins looking for STUN packets within inbound UDP
+firewall begins looking for STUN packets among inbound UDP
 packets. When it sees one, it matches the transaction IDs to ensure
 that they are correlated. Once matched, the 5-tuple is placed into an
 authorized state, and UDP traffic is allowed to freely traverse.
@@ -190,22 +190,23 @@ Firewall Processing
 ==============
 
 The firewall processing is broken into three stages, recognizing STUN
-packets, making a policy decisions about if this should be allowed to
-open a pinhole, and managing the lifetime of the pin hole.
+packets, making a policy decision as to whether each STUN packet should
+trigger a pinhole to be created, and managing the lifetime of any
+pinholes that are created.
 
 
-Recognizing stun packets
+Recognizing STUN packets
 ------------------------
 
 STUN messages all have a magic cookie value of 0x2112A442 in the 4th
 to 8th byte. This can be used to quickly filter nearly all UDP packets
 that are not STUN packets and many firewalls are capable of doing this
-in ASICs. STUN support an optional FINGERPRINT attribute that provides
+in hardware. STUN supports an optional FINGERPRINT attribute that provides
 a 32 bit CRC over the message.
 
 Firewalls SHOULD look at outbound UDP packets and if they have the
 correct magic cookie they may classify them as STUN packets. Firewalls
-that which desire less false positives MAY also check the FINGERPRINT
+that desire fewer false positives MAY also check that the FINGERPRINT
 attribute is correct.
 
 
@@ -213,28 +214,28 @@ Policy decision
 --------------
 
 Once the firewall has received a STUN packet from inside the firewall,
-it needs to decide if wants to accept that or not. For most situations
+it needs to decide if the packet is acceptable. For most situations
 the firewall SHOULD accept all outbound STUN packets. This is similar
-to allow all outbound TCP flows. Some firewalls may choose to look at
+to allowing all outbound TCP flows. Some firewalls may choose to look at
 other factors including the outside UDP port and the ORIGIN attribute
 in the STUN packet.
 
 In general WebRTC media can be sent on a wide range of UDP ports but
 the two ports that are commonly used are the the RTP port (5004) and
 TURN port (3478). Some firewalls MAY choose to only allow flows where
-the destination port on the outside of the firewall is one of theses.
+the destination port on the outside of the firewall is one of these.
 
 The STUN ORIGIN attribute {{I-D.ietf-tram-stun-origin}} carries the
 origin of the web page that caused the various STUN requests. So for
 example, if a browser was on a page such at example.com and that page
 used the WebRTC calls to set up a connection, the STUN request's ORIGIN
 attribute would include example.com. This allows the firewall to see the
-web applications (in this case, example.com) that is requesting the
-pin hole be opened. The firewall MAY have a white list or black list
-for domain in STUN ORIGIN.
+web application (in this case, example.com) that is requesting the
+pinhole be opened. The firewall MAY have a white list or black list
+for domains in STUN ORIGIN.
 
 
-Creating the pin hole rules
+Creating the pinhole rules
 ---------------------------
 
 Once a STUN packet is accepted, the firewall MUST create a temporary
@@ -252,9 +253,9 @@ that an outbound packet is sent at least every 30 seconds.
 Tracking media vs data
 ----------------------
 
-WebRTC can send both audio and video as well as data
+WebRTC can send both audio and video as well as carry a data
 channel. Confidential data could leave an enterprise by a video camera
-being pointed out a document but IT departments are often more
+being pointed at a document but IT departments are often more
 concerned about the data channel. It is easy for the firewall to
 separately track the amount of RTP media and non media data for each
 WebRTC flow. By looking at the first byte of the UDP message,
@@ -271,7 +272,7 @@ WebRTC Browsers
 This specification would require browsers to include the FINGERPRINT
 and ORIGIN attributes in STUN for this to work correctly.
 
-Open Issue: Does add the ORIGIN reduce user privacy. Consider the
+Open Issue: Does adding the ORIGIN reduce user privacy. Consider the
 following case, the user goes to https://facebook.com and initiated a
 call with another facebook user. The domain facebook.com will appear
 (unencrypted) in the STUN packets sent from the browser to the
@@ -292,18 +293,18 @@ reasons for doing this is that sometimes the proxies and firewalls
 allow this to work while the mechanisms and channels designed for
 sending audio and video data have been explicitly disabled by the
 firewall administrators. Many firewall administrators feel this
-circumvents the policy they are trying to enforce and desire way to
+circumvents the policy they are trying to enforce and desire a way to
 prevent this. Any scheme for preventing this has some risk of
 impacting normal HTTP traffic so there is a desire to provide guidance
-around ways to do that here.
+around ways to do that herein.
 
 Any HTTP or HTTPS connection that sends more than 10 requests per
 second for longer than 10 seconds should be paused for 1 second and
-any HTTP/S requests from that clients IP address in the 1 second pause
-time buffered or simply dropped. This strategy ensure there is no
-impact to clients other than the one doing this and minimizes the
-impact to other applications on the device while still reducing the
-incentive to try and run calls this way.
+any HTTP/S requests from that client's IP address in the 1 second pause
+time should be buffered or simply dropped. This strategy ensures there
+is no impact to clients other than the one exceeding the rate limit and
+minimizes the impact to other applications on the device while still
+reducing the incentive to try and run calls this way.
 
 
 Deployment Advice
@@ -313,11 +314,11 @@ Deployment Advice
 WebRTC Servers
 --------------
 
-WebRTC media server and TURN server with public IP address that can
-receive incoming packets from anywhere on the Internet are suggested to
-listen for UDP on ports 53 (DNS), 123(NTP), and 5004 for RTP media
-servers and 3478 for TURN servers. UDP destined to port 53 or 123
-often is allowed by firewalls that otherwise block UDP.
+WebRTC media servers and TURN servers with public IP address(es) that
+can receive incoming packets from anywhere on the Internet are
+suggested to listen for UDP on ports 53 (DNS), 123 (NTP), and 5004
+for RTP media servers and 3478 for TURN servers. UDP destined to port
+53 or 123 often is allowed by firewalls that otherwise block UDP.
 
 
 Firewall Admins
@@ -326,8 +327,8 @@ Firewall Admins
 Often the approach has been to lock down everything that does not have
 to absolutely not be locked down and all UDP is blocked. This simply
 causes applications to do things like embed the data in normal looking
-HTTP or HTTPS requests. Malware and viruses simply use other
-approach. Just turning off all UDP results in a crappy user experience
+HTTP or HTTPS requests. Malware and viruses simply use similar
+approaches. Just turning off all UDP results in a crappy user experience
 some of the time which results in the users moving to applications and
 devices outside the firewall. The IT department looses the visibility
 into what is going on and can no longer protect their users when their
@@ -358,19 +359,22 @@ of the firewall. The major concerns that are raised include:
 
 2. Incoming UDP pinholes allow out of band packets to be spoofed into
    the connecting as there is no equivalent of TCP sequence number to
-   check
+   check.
 
 3. UDP has been used by malware command and control protocols so we
-block it.
+   block it.
 
 4. Do not want enable ways for data to be exfiltrated outside the
-firewall with no monitoring
+   firewall with no monitoring.
 
 5. An encrypted data channel in WebRTC can be used to bring malware
-into the company
+   into the company.
 
-6. An encrypted data channel in WebRTC can be used by an outside
-attacker to upload private files from inside the firewall
+6. An encrypted media or data channel in WebRTC can be used as a command
+   and control channel for malware inside the firewall.
+
+7. An encrypted data channel in WebRTC can be used by an outside
+   attacker to exfiltrate private files from inside the firewall.
 
 
 Alternate Approaches 
