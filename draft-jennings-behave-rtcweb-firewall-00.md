@@ -418,7 +418,9 @@ not seem be happen in limited experiments done so far.
 Acknowledgements
 ================
 
-Many thanks to ...
+Many thanks to Shaun Cooley and Alissa Cooper.
+
+
 
 
 
