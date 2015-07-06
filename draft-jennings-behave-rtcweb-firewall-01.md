@@ -48,7 +48,7 @@ complex, requiring the deployment of Session Border Controllers (SBCs)
 or wide open pinholes. This draft proposes a simple technique that
 allows WebRTC based RTP traffic to traverse firewalls without complex
 firewall configuration and without deployment of SBCs or other
-middleboxes. 
+middleboxes.
 
 --- middle
 
@@ -58,13 +58,12 @@ Problem Statement
 
 WebRTC {{I-D.ietf-rtcweb-overview}} based voice and video
 communications systems are becoming far more common inside
-enterprises, which often
-need voice and video media to traverse the enterprise firewall. This
-can happen when a device inside the firewall such as a web browser
-or phone is exchanging media with a conference bridge or gateway
-outside the firewall, or it can happen when a device inside the
-firewall is talking to a device in another enterprise or behind a
-different firewall.
+enterprises, which often need voice and video media to traverse the
+enterprise firewall. This can happen when a device inside the firewall
+such as a web browser or phone is exchanging media with a conference
+bridge or gateway outside the firewall, or it can happen when a device
+inside the firewall is talking to a device in another enterprise or
+behind a different firewall.
 
 This problem is not unique to WebRTC media of course. It is common
 practice for enterprise administrators to block outbound UDP through
@@ -78,47 +77,44 @@ traffic, the enterprise could in effect be a contributing source to
 such an attack. By blocking UDP, the enterprise IT admin ensures that
 this cannot happen - at least not to external targets.
 
-2. There have been prior attacks that have utilized UDP as a
-command and control channel for orchestrating DDoS attacks. At the
-time, UDP had little usage within enterprises (most VoIP was
-internal to the enterprise when it existed at all). Consequently,
-infosec departments have deemed it safer to block UDP outright in order to
-prevent such further incidents.
+2. There have been prior attacks that have utilized UDP as a command
+and control channel for orchestrating DDoS attacks. At the time, UDP
+had little usage within enterprises (most VoIP was internal to the
+enterprise when it existed at all). Consequently, infosec departments
+have deemed it safer to block UDP outright in order to prevent such
+further incidents.
 
 3. Many IT administrators enable various packet inspection operations
 on traffic flowing through the firewall. High volume UDP traffic -
-such as voice or video - can
-be costly to inspect. As such, in cases where there is a need for
-traversal of such traffic, IT has preferred to deploy an SBC that, in
-essence, verifies that the traffic is VoIP and authorizes its
-egress. The IT administrator then enables traffic to/from the SBC
-through the firewall. In other words, VoIP authorization is delegated
-to an outsourced SBC. 
+such as voice or video - can be costly to inspect. As such, in cases
+where there is a need for traversal of such traffic, IT has preferred
+to deploy an SBC that, in essence, verifies that the traffic is VoIP
+and authorizes its egress. The IT administrator then enables traffic
+to/from the SBC through the firewall. In other words, VoIP
+authorization is delegated to an outsourced SBC.
 
-As more and more IP communications services move to the cloud, there is an
-increased need for VoIP traffic to traverse the enterprise
+As more and more IP communications services move to the cloud, there
+is an increased need for VoIP traffic to traverse the enterprise
 firewall. At the same time, the entire point of a cloud service is
-that it does not require the deployment of on premises
-infrastructure, making SBC-based solutions less desirable. An
-alternative solution that has been historically used is to enable
-outbound UDP in the firewall to specific IP addresses, corresponding
-to the external service (TURN servers or conference servers) that the
-enterprise wishes to authorize. With more applications running on
-virtual machines within cloud compute platforms like Amazon EC2, IP
-addresses are decreasingly usable as identifiers for a
-service. VMs running TURN servers or conferencing servers may be
-established and torn down by the day, hour or even minute, with
-continuously changing IP addresses. Given the multitenant nature of
-such providers, IT departments are unwilling to whitelist the IP
-addresses for the entire block used by such providers.
+that it does not require the deployment of on premises infrastructure,
+making SBC-based solutions less desirable. An alternative solution
+that has been historically used is to enable outbound UDP in the
+firewall to specific IP addresses, corresponding to the external
+service (TURN servers or conference servers) that the enterprise
+wishes to authorize. With more applications running on virtual
+machines within cloud compute platforms like Amazon EC2, IP addresses
+are decreasingly usable as identifiers for a service. VMs running TURN
+servers or conferencing servers may be established and torn down by
+the day, hour or even minute, with continuously changing IP
+addresses. Given the multitenant nature of such providers, IT
+departments are unwilling to whitelist the IP addresses for the entire
+block used by such providers.
 
-
-Consequently, there is a growing need for solutions
-that allow VoIP traversal through the corporate firewall that
-alleviate the concerns above. This issue is further exacerbated by the
-growing adoption of WebRTC by enterprise applications, which provide a
-ready source of RTP traffic which often needs to traverse the
-firewall.
+Consequently, there is a growing need for solutions that allow VoIP
+traversal through the corporate firewall that alleviate the concerns
+above. This issue is further exacerbated by the growing adoption of
+WebRTC by enterprise applications, which provide a ready source of RTP
+traffic which often needs to traverse the firewall.
 
 Solution Requirements
 =====================
@@ -142,8 +138,8 @@ REQ-5: The solution must work with cloud services external to the
 enterprise which terminate media on servers, such as conference
 servers, voicemail servers, recording servers, and so on.
 
-REQ-6: The solution must not require decryption of either signalling or
-media traffic at the firewall or at any other intermediary
+REQ-6: The solution must not require decryption of either signalling
+or media traffic at the firewall or at any other intermediary
 
 REQ-7: The solution must allow the IT department to easily make policy
 decisions about which applications are allowed, or not allowed, to
@@ -183,7 +179,7 @@ authorized state, and UDP traffic is allowed to freely traverse.
 
 In addition, the initial outbound STUN packets contain the STUN ORIGIN
 field which the firewall can use to make an authorization decision on
-the application. 
+the application.
 
 
 Firewall Processing
@@ -216,9 +212,9 @@ Policy decision
 Once the firewall has received a STUN packet from inside the firewall,
 it needs to decide if the packet is acceptable. For most situations
 the firewall SHOULD accept all outbound STUN packets. This is similar
-to allowing all outbound TCP flows. Some firewalls may choose to look at
-other factors including the outside UDP port and the ORIGIN attribute
-in the STUN packet.
+to allowing all outbound TCP flows. Some firewalls may choose to look
+at other factors including the outside UDP port and the ORIGIN
+attribute in the STUN packet.
 
 In general WebRTC media can be sent on a wide range of UDP ports but
 the two ports that are commonly used are the the RTP port (5004) and
@@ -228,26 +224,27 @@ the destination port on the outside of the firewall is one of these.
 The STUN ORIGIN attribute {{I-D.ietf-tram-stun-origin}} carries the
 origin of the web page that caused the various STUN requests. So for
 example, if a browser was on a page such as example.com and that page
-used the WebRTC calls to set up a connection, the STUN request's ORIGIN
-attribute would include example.com. This allows the firewall to see the
-web application (in this case, example.com) that is requesting the
-pinhole be opened. The firewall MAY have a white list or black list
-for domains in STUN ORIGIN.
+used the WebRTC calls to set up a connection, the STUN request's
+ORIGIN attribute would include example.com. This allows the firewall
+to see the web application (in this case, example.com) that is
+requesting the pinhole be opened. The firewall MAY have a white list
+or black list for domains in STUN ORIGIN.
 
 
 Creating the pinhole rules
 ---------------------------
 
 Once a STUN packet is accepted, the firewall MUST create a temporary
-rule that allows incoming and outgoing packets for that 5-tuple for
-at least 5 seconds. If in that 5 seconds, a response is received to
-the STUN request, the lifetime of the rule must be extended to at
-least 30 seconds from last accepted STUN packet from inside the
-firewall. Once the rule has been extended to 30 seconds the first time, any additional UDP
-packets from inside the firewall MUST extend the lifetime of the rule
-by at least 30 seconds from the time that packet was received. The
-procedures in {{I-D.ietf-rtcweb-stun-consent-freshness}} will ensure
-that an outbound packet is sent at least every 30 seconds. 
+rule that allows incoming and outgoing packets for that 5-tuple for at
+least 5 seconds. If in that 5 seconds, a response is received to the
+STUN request, the lifetime of the rule must be extended to at least 30
+seconds from last accepted STUN packet from inside the firewall. Once
+the rule has been extended to 30 seconds the first time, any
+additional UDP packets from inside the firewall MUST extend the
+lifetime of the rule by at least 30 seconds from the time that packet
+was received. The procedures in
+{{I-D.ietf-rtcweb-stun-consent-freshness}} will ensure that an
+outbound packet is sent at least every 30 seconds.
 
 
 Tracking media vs data
@@ -258,10 +255,11 @@ channel. Confidential data could leave an enterprise by a video camera
 being pointed at a document, but IT departments are often more
 concerned about the data channel. It is easy for the firewall to
 separately track the amount of RTP media and non-media data for each
-WebRTC flow. If the first byte of the UDP message is 23, it is non-media data; if it is in the range 127 to 192 
-it is audio or video data. More information about this can be found in
-{{I-D.ietf-avtcore-rfc5764-mux-fixes}}. Network management systems on 
-the firewall can track these two separately which can help identify 
+WebRTC flow. If the first byte of the UDP message is 23, it is
+non-media data; if it is in the range 127 to 192 it is audio or video
+data. More information about this can be found in
+{{I-D.ietf-avtcore-rfc5764-mux-fixes}}. Network management systems on
+the firewall can track these two separately which can help identify
 unusual usage.
 
 
@@ -274,13 +272,13 @@ and ORIGIN attributes in STUN for this to work correctly.
 Open Issue: Does adding the ORIGIN reduce user privacy? Consider the
 following case. The user goes to https://facebook.com and initiates a
 call with another Facebook user. The domain facebook.com will appear
-(unencrypted) in the STUN packets sent from the browser to
-Facebook's TURN server. Anyone along the network path could tell that
-the user is using Facebook's TURN server. However, when the original
-TLS connection for the HTTP was made, the Server Name Indication (SNI)
-in the TLS of the HTTPS connection also revealed facebook.com,
-largely for the same reasons - so that the firewall would be able
-to see which applications are using the network.
+(unencrypted) in the STUN packets sent from the browser to Facebook's
+TURN server. Anyone along the network path could tell that the user is
+using Facebook's TURN server. However, when the original TLS
+connection for the HTTP was made, the Server Name Indication (SNI) in
+the TLS of the HTTPS connection also revealed facebook.com, largely
+for the same reasons - so that the firewall would be able to see which
+applications are using the network.
 
 
 Blocking Media Hiding in HTTP
@@ -294,16 +292,16 @@ sending audio and video data have been explicitly disabled by the
 firewall administrators. Many firewall administrators feel this
 circumvents the policy they are trying to enforce and desire a way to
 prevent this. Any scheme for preventing this has some risk of
-impacting normal HTTP traffic, so there is a desire to provide guidance
-around ways to do that in this draft.
+impacting normal HTTP traffic, so there is a desire to provide
+guidance around ways to do that in this draft.
 
 Any HTTP or HTTPS connection that sends more than 10 requests per
 second for longer than 10 seconds should be paused for 1 second, and
-any HTTP/S requests from that client's IP address in the 1 second pause
-time should be buffered or simply dropped. This strategy ensures there
-is no impact to clients other than the one exceeding the rate limit and
-minimizes the impact to other applications on the device while still
-reducing the incentive to try and run calls this way.
+any HTTP/S requests from that client's IP address in the 1 second
+pause time should be buffered or simply dropped. This strategy ensures
+there is no impact to clients other than the one exceeding the rate
+limit and minimizes the impact to other applications on the device
+while still reducing the incentive to try and run calls this way.
 
 
 Deployment Advice
@@ -315,23 +313,24 @@ WebRTC Servers
 
 WebRTC media servers and TURN servers with public IP address(es) that
 can receive incoming packets from anywhere on the Internet are
-suggested to listen for UDP on ports 53 (DNS), 123 (NTP), and 5004
-for RTP media servers and 3478 for TURN servers. UDP destined for port
-53 or 123 if often allowed by firewalls that otherwise block UDP. 
+suggested to listen for UDP on ports 53 (DNS), 123 (NTP), and 5004 for
+RTP media servers and 3478 for TURN servers. UDP destined for port 53
+or 123 if often allowed by firewalls that otherwise block UDP.
 
 
 Firewall Admins
 ---------------
 
-Often the approach has been to lock down everything, so that all UDP is blocked. This simply
-causes applications to do things like embed the data in normal looking
-HTTP or HTTPS requests. Malware and viruses use similar
-approaches. Just turning off all UDP results in a poor user experience
-some of the time, which results in users moving to applications and
-devices outside the firewall. The IT department loses the visibility
-into what is going on and can no longer protect its users when their
-computers become compromised. Allowing things that users want to use
-to work and monitoring them to detect when things have gone wrong is very valuable.
+Often the approach has been to lock down everything, so that all UDP
+is blocked. This simply causes applications to do things like embed
+the data in normal looking HTTP or HTTPS requests. Malware and viruses
+use similar approaches. Just turning off all UDP results in a poor
+user experience some of the time, which results in users moving to
+applications and devices outside the firewall. The IT department loses
+the visibility into what is going on and can no longer protect its
+users when their computers become compromised. Allowing things that
+users want to use to work and monitoring them to detect when things
+have gone wrong is very valuable.
 
 
 
@@ -367,8 +366,8 @@ of the firewall. The major concerns that are raised include:
 5. An encrypted data channel in WebRTC can be used to bring malware
    into the company.
 
-6. An encrypted media or data channel in WebRTC can be used as a command
-   and control channel for malware inside the firewall.
+6. An encrypted media or data channel in WebRTC can be used as a
+   command and control channel for malware inside the firewall.
 
 7. An encrypted data channel in WebRTC can be used by an outside
    attacker to exfiltrate private files from inside the firewall.
@@ -380,36 +379,39 @@ Alternate Approaches
 Firewall Auth Tokens
 ------------------
 
-{{I-D.reddy-rtcweb-stun-auth-fw-traversal}} attempts to solve a similar
-problem by proposing a new comprehension-optional FW-FLOWDATA STUN attribute
-as part of ICE Connectivity checks enabling the firewall to permit outgoing
-UDP flows across the firewall. FW-FLOWDATA STUN provides necessary
-information, such as lifetime, and candidate information, enabling a firewall
-to apply the required policy rules. However, {{I-D.reddy-rtcweb-stun-auth-fw-traversal}}
-requires establishing shared keys across the firewall(s) and the WebRTC server 
-for successfully verifying the authenticity of the FW-FLOWDATA information.
-In summary, we believe {{I-D.reddy-rtcweb-stun-auth-fw-traversal}} to have 
-following short-comings
+{{I-D.reddy-rtcweb-stun-auth-fw-traversal}} attempts to solve a
+similar problem by proposing a new comprehension-optional FW-FLOWDATA
+STUN attribute as part of ICE Connectivity checks enabling the
+firewall to permit outgoing UDP flows across the firewall. FW-FLOWDATA
+STUN provides necessary information, such as lifetime, and candidate
+information, enabling a firewall to apply the required policy
+rules. However, {{I-D.reddy-rtcweb-stun-auth-fw-traversal}} requires
+establishing shared keys across the firewall(s) and the WebRTC server
+for successfully verifying the authenticity of the FW-FLOWDATA
+information.  In summary, we believe
+{{I-D.reddy-rtcweb-stun-auth-fw-traversal}} to have following
+short-comings
 
-1. Requiring a tight coupling between the application server (WebRTC server) and
-firewall(s)
+1. Requiring a tight coupling between the application server (WebRTC
+server) and firewall(s)
 
-2. Requiring additional efforts for Firewall Admins within an enterprise to distribute 
-and maintain the shared authentication keys needed to generate authentication
-tags for the FW-FLOWDATA attribute.
+2. Requiring additional efforts for Firewall Admins within an
+enterprise to distribute and maintain the shared authentication keys
+needed to generate authentication tags for the FW-FLOWDATA attribute.
 
-3. {{I-D.reddy-rtcweb-stun-auth-fw-traversal}} doesn't apply for 
-distributing keys across firewalls in different administrative domains.
+3. {{I-D.reddy-rtcweb-stun-auth-fw-traversal}} doesn't apply for
+distributing keys across firewalls in different administrative
+domains.
 
 Any Cast Whitelist
 ---------------
 
-Deploying media or TURN servers on a single any-cast IP address also 
-makes it easier for firewall administrators to whitelist the 
-address. Concerns have been raised that two packets sent from the same 
-host to a given any-cast address may get delivered to different 
-servers.  This is certainly possible in theory but in practice it does 
-not seem be happen in limited experiments done so far. 
+Deploying media or TURN servers on a single any-cast IP address also
+makes it easier for firewall administrators to whitelist the
+address. Concerns have been raised that two packets sent from the same
+host to a given any-cast address may get delivered to different
+servers.  This is certainly possible in theory but in practice it does
+not seem be happen in limited experiments done so far.
 
 
 Acknowledgements
