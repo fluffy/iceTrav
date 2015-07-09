@@ -378,9 +378,9 @@
 <link href="#rfc.section.2" rel="Chapter" title="2 Solution Requirements"/>
 <link href="#rfc.section.3" rel="Chapter" title="3 Solution Overview"/>
 <link href="#rfc.section.4" rel="Chapter" title="4 Firewall Processing"/>
-<link href="#rfc.section.4.1" rel="Chapter" title="4.1 Recognizing stun packets"/>
+<link href="#rfc.section.4.1" rel="Chapter" title="4.1 Recognizing STUN packets"/>
 <link href="#rfc.section.4.2" rel="Chapter" title="4.2 Policy decision"/>
-<link href="#rfc.section.4.3" rel="Chapter" title="4.3 Creating the pin hole rules"/>
+<link href="#rfc.section.4.3" rel="Chapter" title="4.3 Creating the pinhole rules"/>
 <link href="#rfc.section.4.4" rel="Chapter" title="4.4 Tracking media vs data"/>
 <link href="#rfc.section.5" rel="Chapter" title="5 WebRTC Browsers"/>
 <link href="#rfc.section.6" rel="Chapter" title="6 Blocking Media Hiding in HTTP"/>
@@ -400,12 +400,12 @@
 <link href="#rfc.authors" rel="Chapter"/>
 
 
-  <meta name="generator" content="xml2rfc version 2.5.0 - http://tools.ietf.org/tools/xml2rfc" />
+  <meta name="generator" content="xml2rfc version 2.4.8 - http://tools.ietf.org/tools/xml2rfc" />
   <link rel="schema.dct" href="http://purl.org/dc/terms/" />
 
-  <meta name="dct.creator" content="Jennings, C., Nandakumar, S., and J. Rosenberg" />
-  <meta name="dct.identifier" content="urn:ietf:id:draft-jennings-behave-rtcweb-firewall-00" />
-  <meta name="dct.issued" scheme="ISO8601" content="2015-7-05" />
+  <meta name="dct.creator" content="Patel, P., Jennings, C., Nandakumar, S., Rosenberg, J., and D. Wing" />
+  <meta name="dct.identifier" content="urn:ietf:id:draft-jennings-behave-rtcweb-firewall-01" />
+  <meta name="dct.issued" scheme="ISO8601" content="2015-7-07" />
   <meta name="dct.abstract" content="Traversal of RTP through corporate firewalls has traditionally been complex, requiring the deployment of Session Border Controllers (SBCs) or wide open pinholes. This draft proposes a simple technique that allows WebRTC based RTP traffic to traverse firewalls without complex firewall configuration and without deployment of SBCs or other middleboxes." />
   <meta name="description" content="Traversal of RTP through corporate firewalls has traditionally been complex, requiring the deployment of Session Border Controllers (SBCs) or wide open pinholes. This draft proposes a simple technique that allows WebRTC based RTP traffic to traverse firewalls without complex firewall configuration and without deployment of SBCs or other middleboxes." />
 
@@ -418,23 +418,31 @@
     
     	<tr>
   <td class="left">rtcweb</td>
-  <td class="right">C. Jennings</td>
+  <td class="right">P. Patel</td>
 </tr>
 <tr>
   <td class="left">Internet-Draft</td>
-  <td class="right">S. Nandakumar</td>
+  <td class="right">C. Jennings</td>
 </tr>
 <tr>
   <td class="left">Intended status: Informational</td>
+  <td class="right">S. Nandakumar</td>
+</tr>
+<tr>
+  <td class="left">Expires: January 8, 2016</td>
   <td class="right">J. Rosenberg</td>
 </tr>
 <tr>
-  <td class="left">Expires: January 6, 2016</td>
+  <td class="left"></td>
+  <td class="right">D. Wing</td>
+</tr>
+<tr>
+  <td class="left"></td>
   <td class="right">Cisco</td>
 </tr>
 <tr>
   <td class="left"></td>
-  <td class="right">July 05, 2015</td>
+  <td class="right">July 07, 2015</td>
 </tr>
 
     	
@@ -442,7 +450,7 @@
   </table>
 
   <p class="title">Firewall Traversal for WebRTC<br />
-  <span class="filename">draft-jennings-behave-rtcweb-firewall-00</span></p>
+  <span class="filename">draft-jennings-behave-rtcweb-firewall-01</span></p>
   
   <h1 id="rfc.abstract">
   <a href="#rfc.abstract">Abstract</a>
@@ -454,7 +462,7 @@
 <p>This Internet-Draft is submitted in full conformance with the provisions of BCP 78 and BCP 79.</p>
 <p>Internet-Drafts are working documents of the Internet Engineering Task Force (IETF).  Note that other groups may also distribute working documents as Internet-Drafts.  The list of current Internet-Drafts is at http://datatracker.ietf.org/drafts/current/.</p>
 <p>Internet-Drafts are draft documents valid for a maximum of six months and may be updated, replaced, or obsoleted by other documents at any time.  It is inappropriate to use Internet-Drafts as reference material or to cite them other than as "work in progress."</p>
-<p>This Internet-Draft will expire on January 6, 2016.</p>
+<p>This Internet-Draft will expire on January 8, 2016.</p>
 <h1 id="rfc.copyrightnotice">
   <a href="#rfc.copyrightnotice">Copyright Notice</a>
 </h1>
@@ -470,41 +478,41 @@
 <li>2.   <a href="#rfc.section.2">Solution Requirements</a></li>
 <li>3.   <a href="#rfc.section.3">Solution Overview</a></li>
 <li>4.   <a href="#rfc.section.4">Firewall Processing</a></li>
-<ul><li>4.1.   <a href="#rfc.section.4.1">Recognizing stun packets</a></li>
+<li>4.1.   <a href="#rfc.section.4.1">Recognizing STUN packets</a></li>
 <li>4.2.   <a href="#rfc.section.4.2">Policy decision</a></li>
-<li>4.3.   <a href="#rfc.section.4.3">Creating the pin hole rules</a></li>
+<li>4.3.   <a href="#rfc.section.4.3">Creating the pinhole rules</a></li>
 <li>4.4.   <a href="#rfc.section.4.4">Tracking media vs data</a></li>
-</ul><li>5.   <a href="#rfc.section.5">WebRTC Browsers</a></li>
+<li>5.   <a href="#rfc.section.5">WebRTC Browsers</a></li>
 <li>6.   <a href="#rfc.section.6">Blocking Media Hiding in HTTP</a></li>
 <li>7.   <a href="#rfc.section.7">Deployment Advice</a></li>
-<ul><li>7.1.   <a href="#rfc.section.7.1">WebRTC Servers</a></li>
+<li>7.1.   <a href="#rfc.section.7.1">WebRTC Servers</a></li>
 <li>7.2.   <a href="#rfc.section.7.2">Firewall Admins</a></li>
-</ul><li>8.   <a href="#rfc.section.8">Design Consideration</a></li>
-<ul><li>8.1.   <a href="#rfc.section.8.1">Why not just use TCP?</a></li>
-</ul><li>9.   <a href="#rfc.section.9">Security Concerns</a></li>
+<li>8.   <a href="#rfc.section.8">Design Consideration</a></li>
+<li>8.1.   <a href="#rfc.section.8.1">Why not just use TCP?</a></li>
+<li>9.   <a href="#rfc.section.9">Security Concerns</a></li>
 <li>10.   <a href="#rfc.section.10">Alternate Approaches</a></li>
-<ul><li>10.1.   <a href="#rfc.section.10.1">Firewall Auth Tokens</a></li>
+<li>10.1.   <a href="#rfc.section.10.1">Firewall Auth Tokens</a></li>
 <li>10.2.   <a href="#rfc.section.10.2">Any Cast Whitelist</a></li>
-</ul><li>11.   <a href="#rfc.section.11">Acknowledgements</a></li>
+<li>11.   <a href="#rfc.section.11">Acknowledgements</a></li>
 <li>12.   <a href="#rfc.references">References</a></li>
-<ul><li>12.1.   <a href="#rfc.references.1">Normative References</a></li>
+<li>12.1.   <a href="#rfc.references.1">Normative References</a></li>
 <li>12.2.   <a href="#rfc.references.2">Informative References</a></li>
-</ul><li><a href="#rfc.authors">Authors' Addresses</a></li>
+<li><a href="#rfc.authors">Authors' Addresses</a></li>
 
 
   </ul>
 
   <h1 id="rfc.section.1"><a href="#rfc.section.1">1.</a> <a href="#problem-statement" id="problem-statement">Problem Statement</a></h1>
-<p id="rfc.section.1.p.1">WebRTC <a href="#I-D.ietf-rtcweb-overview">[I-D.ietf-rtcweb-overview]</a> based voice and video communications systems are becoming far more common inside of enterprises and they often need voice and video media to traverse the enterprise firewall. This can happen when a device inside the firewall such as a web browser or phone is exchanging media with a conference bridge or gateway outside the firewall or it can happen when a device inside the firewall is talking to a device in another enterprise or behind a different firewall.</p>
-<p id="rfc.section.1.p.2">This problem is not unique to WebRTC media of course. It is common practice for enterprise administrators to block outbound UDP through the corporate firewall. This is for several reasons:</p>
+<p id="rfc.section.1.p.1">WebRTC <a href="#I-D.ietf-rtcweb-overview">[I-D.ietf-rtcweb-overview]</a> based voice and video communications systems are becoming far more common inside enterprises, which often need voice and video media to traverse the enterprise firewall. This can happen when a device inside the firewall such as a web browser or phone is exchanging media with a conference bridge or gateway outside the firewall, or it can happen when a device inside the firewall is talking to a device in another enterprise or behind a different firewall.</p>
+<p id="rfc.section.1.p.2">This problem is not unique to WebRTC media of course. It is common practice for enterprise administrators to block outbound UDP through the corporate firewall. This is done for several reasons:</p>
 <p/>
 
 <ol>
-  <li>The lack of any kind of return messages means that there is no way to know that the recipient of the UDP traffic really wants it. Infected computers within the enterprise could utilize UDP as the source of a DDoS attack. If the firewall permitted such outbound traffic, the enterprise could in effect be a contributing source to such an attack. By blocking UDP, the enterprise IT admin assures that this cannot happen - at least not to external targets.</li>
-  <li>There have been prior attacks that have utilized UDP as a command and control channel for orchestrating DDoS attacks. At the time, UDP had little usage within the enterprise (most VoIP was internal to the enterprise when it existed at all). Consequently, infosec departments deemed it safer to block UDP outright in order to prevent such a further incident.</li>
-  <li>Many IT administrators enable various packet inspection operations on traffic flowing through the firewall. High volume UDP traffic - such as voice or video - can be costly to inspect. As such, in cases where there is a need for traversal of such traffic, IT has preferred to deploy an SBC that, in essence, verifies that the traffic is VoIP and authorizes its egress. The IT administrator then enables traffic to/from the SBC through the firewall. In otherwords, VoIP authorization is delegated to an outsourced SBC.</li>
+  <li>The lack of any kind of return messages means that there is no way to know that the recipient of the UDP traffic really wants it. Infected computers within the enterprise could utilize UDP as the source of a DDoS attack. If the firewall permitted such outbound traffic, the enterprise could in effect be a contributing source to such an attack. By blocking UDP, the enterprise IT admin ensures that this cannot happen - at least not to external targets.</li>
+  <li>There have been prior attacks that have utilized UDP as a command and control channel for orchestrating DDoS attacks. At the time, UDP had little usage within enterprises (most VoIP was internal to the enterprise when it existed at all). Consequently, infosec departments have deemed it safer to block UDP outright in order to prevent such further incidents.</li>
+  <li>Many IT administrators enable various packet inspection operations on traffic flowing through the firewall. High volume UDP traffic - such as voice or video - can be costly to inspect. As such, in cases where there is a need for traversal of such traffic, IT has preferred to deploy an SBC that, in essence, verifies that the traffic is VoIP and authorizes its egress. The IT administrator then enables traffic to/from the SBC through the firewall. In other words, VoIP authorization is delegated to an outsourced SBC.</li>
 </ol>
-<p id="rfc.section.1.p.4">As more and more IP communications services move to cloud, there is an increased need for VoIP traffic to traverse the enterprise firewall. At the same time, the entire point of a cloud service is that it does not require deployment of premises infrastructure, making SBC-based solutions less desirable. An alternative solution that has been historically used is to enable outbound UDP in the firewall to specific IP addresses, corresponding to the external service (TURN servers or conference servers) that the enterprise wishes to authorize. With more applications running on virtual machines within cloud compute platforms like Amazon EC2, IP addresses are decreasingly usable as identifiers for a service. VMs running TURN servers or conferencing servers may be established and torn down by the day, hour or even minute, with continuously changing IP addresses. Given the multitenant nature of such providers, IT departments are unwilling to whitelist the IP addresses for the entire block used by such providers.</p>
+<p id="rfc.section.1.p.4">As more and more IP communications services move to the cloud, there is an increased need for VoIP traffic to traverse the enterprise firewall. At the same time, the entire point of a cloud service is that it does not require the deployment of on premises infrastructure, making SBC-based solutions less desirable. An alternative solution that has been historically used is to enable outbound UDP in the firewall to specific IP addresses, corresponding to the external service (TURN servers or conference servers) that the enterprise wishes to authorize. With more applications running on virtual machines within cloud compute platforms like Amazon EC2, IP addresses are decreasingly usable as identifiers for a service. VMs running TURN servers or conferencing servers may be established and torn down by the day, hour or even minute, with continuously changing IP addresses. Given the multitenant nature of such providers, IT departments are unwilling to whitelist the IP addresses for the entire block used by such providers.</p>
 <p id="rfc.section.1.p.5">Consequently, there is a growing need for solutions that allow VoIP traversal through the corporate firewall that alleviate the concerns above. This issue is further exacerbated by the growing adoption of WebRTC by enterprise applications, which provide a ready source of RTP traffic which often needs to traverse the firewall.</p>
 <h1 id="rfc.section.2"><a href="#rfc.section.2">2.</a> <a href="#solution-requirements" id="solution-requirements">Solution Requirements</a></h1>
 <p id="rfc.section.2.p.1">We believe the solution must meet the following requirements:</p>
@@ -512,40 +520,69 @@
 <p id="rfc.section.2.p.3">REQ-2: The solution must not require the whitelisting of specific external IP addresses</p>
 <p id="rfc.section.2.p.4">REQ-3: The solution must enable the enterprise to be sure that the receiving party of the traffic desires the traffic</p>
 <p id="rfc.section.2.p.5">REQ-4: The solution must work with P2P calls between users in different enterprises without requiring a TURN server</p>
-<p id="rfc.section.2.p.6">REQ-5: The solution must work with cloud services external to the enterprise which terminate media on servers, such as conference servers, voicemail servers, recording servers, and so on.</p>
+<p id="rfc.section.2.p.6">REQ-5: The solution must work with cloud services external to the enterprise which terminate media on servers, such as conference servers, voicemail servers, and so on.</p>
 <p id="rfc.section.2.p.7">REQ-6: The solution must not require decryption of either signaling or media traffic at the firewall or at any other intermediary</p>
 <p id="rfc.section.2.p.8">REQ-7: The solution must allow the IT department to easily make policy decisions about which applications are allowed, or not allowed, to traverse the firewall</p>
-<p id="rfc.section.2.p.9">REQ-8: The solution must not require DPI of ever single UDP packet that traverses the firewall</p>
-<p id="rfc.section.2.p.10">REQ-9: The solution must provide a minimum level of proof that the traffic is RTP and not something else</p>
+<p id="rfc.section.2.p.9">REQ-8: The solution must not require inspection of every single UDP packet that traverses the firewall</p>
+<p id="rfc.section.2.p.10">REQ-9: The solution must provide a minimum level of proof that the traffic is WebRTC media or data and not something else</p>
 <p id="rfc.section.2.p.11">REQ-10: The solution must work with WebRTC traffic. Note that solving this for non-WebRTC is a non-requirement.</p>
 <h1 id="rfc.section.3"><a href="#rfc.section.3">3.</a> <a href="#solution-overview" id="solution-overview">Solution Overview</a></h1>
-<p id="rfc.section.3.p.1">Many of the reasons for blocking UDP at the corporate firewall have their origins in the lack of a three way handshake for UDP traffic. TCPs three-way handshake ensures that the receiving part of the connection desires the traffic. Similarly, HTTP traffic easily traverses the firewall since it provides application identification information in the URL.</p>
-<p id="rfc.section.3.p.2">Consequently, the solution proposed here relies on the ICE connectivity checks, which provide a similar handshake and ensure consent of the remote party. When a firewall sees an outbound UDP packet on a 5-tuple which is not yet authorized, it begins looking for STUN packets (as identified by the STUN magic cookie). Any outbound packet that is not a STUN packet is discarded. Once an outbound STUN packet is identified, the 5-tuple is put in a pending state, and the firewall begins looking for STUN packets within inbound UDP packets. When it sees one, it matches the transaction IDs to ensure that they are correlated. Once matched, the 5-tuple is placed into an authorized state, and UDP traffic is allowed to freely traverse.</p>
-<p id="rfc.section.3.p.3">In addition, the initial outbound STUN packets contain the STUN ORIGIN field which the firewall can use to make an authorization decision on the application.</p>
+<p id="rfc.section.3.p.1">Many of the reasons for blocking UDP at the corporate firewall have their origins in the lack of a three-way handshake for UDP traffic. TCP&#8217;s three-way handshake ensures that the receiving party of the connection desires the traffic. Similarly, HTTP traffic easily traverses the firewall since it provides application identification information in the URL.</p>
+<p id="rfc.section.3.p.2">Consequently, the solution proposed here relies on the ICE connectivity checks, which provide a similar handshake and ensure consent of the remote party.</p>
+<p id="rfc.section.3.p.3">The firewall looks for an outbound ICE connectivity check and allows inbound ICE connectivity checks that are going to the same location that cared the outbound and that have the correct random ufrag value that was created by the client inside the firewall.  After a successful ICE connectivity check, the firewall allows other media to flow on the same 5 tuple that had the successful ICE connectivity check.  Timers are used to removed the various pinholes created.</p>
+<p id="rfc.section.3.p.4">In addition, the initial outbound STUN packets can contain the STUN ORIGIN field which the firewall can use to make an authorization decision on the application.</p>
+<p id="rfc.section.3.p.5">The end result is a system where:</p>
+<p/>
+
+<ul>
+  <li>STUN packets are only allowed &#8220;in&#8221; if they know the crypto random username generated by a client inside the firewall</li>
+  <li>Non STUN packets are only allowed &#8220;in&#8221; if they match a 5 tuple that a client inside the firewall sent a packet too</li>
+  <li>Non STUN packets are only allowed &#8220;out&#8221; if the destination they are sending to did a stun consent handshake</li>
+</ul>
 <h1 id="rfc.section.4"><a href="#rfc.section.4">4.</a> <a href="#firewall-processing" id="firewall-processing">Firewall Processing</a></h1>
-<p id="rfc.section.4.p.1">The firewall processing is broken into three stages, recognizing STUN packets, making a policy decisions about if this should be allowed to open a pinhole, and managing the lifetime of the pin hole.</p>
-<h1 id="rfc.section.4.1"><a href="#rfc.section.4.1">4.1.</a> <a href="#recognizing-stun-packets" id="recognizing-stun-packets">Recognizing stun packets</a></h1>
-<p id="rfc.section.4.1.p.1">STUN messages all have a magic cookie value of 0x2112A442 in the 4th to 8th byte. This can be used to quickly filter nearly all UDP packets that are not STUN packets and many firewalls are capable of doing this in ASICs. STUN support an optional FINGERPRINT attribute that provides a 32 bit CRC over the message.</p>
-<p id="rfc.section.4.1.p.2">Firewalls SHOULD look at outbound UDP packets and if they have the correct magic cookie they may classify them as STUN packets. Firewalls that which desire less false positives MAY also check the FINGERPRINT attribute is correct.</p>
+<p id="rfc.section.4.p.1">The firewall processing is broken into three stages: recognizing STUN packets, making a policy decision as to whether each STUN packet should trigger a pinhole to be created, and managing the lifetime of any pinholes that are created.</p>
+<p id="rfc.section.4.p.2">The term 3-tuple is used to refer to IP address, protocol (which is always UPD), and port that the firewall sees as the address of the client inside the firewall.</p>
+<p id="rfc.section.4.p.3">The term 4-tuple is used to refer to 3-tuple plus the ice ufrag that was send in the STUN request message for the client inside the firewall.</p>
+<p id="rfc.section.4.p.4">The term 5-tuple is used to refer to the 3-tuple plus the  IP address and port of the device outside the firewall. </p>
+<p id="rfc.section.4.p.5">When matching a ufrag, if it is a STUN request that came from outside the firewall, the two halves of the username  on either side of the &#8220;:&#8221; need to be swapped before matching. </p>
+<h1 id="rfc.section.4.1"><a href="#rfc.section.4.1">4.1.</a> <a href="#recognizing-stun-packets" id="recognizing-stun-packets">Recognizing STUN packets</a></h1>
+<p id="rfc.section.4.1.p.1">STUN messages all have a magic cookie value of 0x2112A442 in the 4th to 8th byte. This can be used to quickly filter nearly all UDP packets that are not STUN packets. Many firewalls are capable of doing this in hardware. STUN supports an optional FINGERPRINT attribute that provides a 32 bit CRC over the message.</p>
+<p id="rfc.section.4.1.p.2">Option A: Firewalls SHOULD look at outbound UDP packets and if they have the correct magic cookie they can classify them as STUN packets.</p>
+<p id="rfc.section.4.1.p.3">Option B: The firewall looks for any outgoing STUN requests to the STUN port (3478). When it finds one, it stores the 3 tuple of the source address port&#160;and protocol=UDP and for the next 30 seconds checks any packets from this 3 tuple to see if they are ICE connectivity checks.&#160;</p>
+<p id="rfc.section.4.1.p.4">Open Issue: * decide between option A and B. A requires looking at all UDP packets but will likely work better than B. Most firewalls look at all TCP packets so probably bot a big deal.</p>
+<p id="rfc.section.4.1.p.5">Firewalls that desire fewer false positives MAY also check that the FINGERPRINT attribute is correct. Open Issue: MAY, MUST, MUST NOT - what do we want here. If we put MAY or MUST, then browsers MUST include this. If browsers are not required to provide this then I think we are more in the MUST not category.</p>
 <h1 id="rfc.section.4.2"><a href="#rfc.section.4.2">4.2.</a> <a href="#policy-decision" id="policy-decision">Policy decision</a></h1>
-<p id="rfc.section.4.2.p.1">Once the firewall has received a STUN packet from inside the firewall, it needs to decide if wants to accept that or not. For most situations the firewall SHOULD accept all outbound STUN packets. This is similar to allow all outbound TCP flows. Some firewalls may choose to look at other factors including the outside UDP port and the ORIGIN attribute in the STUN packet.</p>
-<p id="rfc.section.4.2.p.2">In general WebRTC media can be sent on a wide range of UDP ports but the two ports that are commonly used are the the RTP port (5004) and TURN port (3478). Some firewalls MAY choose to only allow flows where the destination port on the outside of the firewall is one of theses.</p>
-<p id="rfc.section.4.2.p.3">The STUN ORIGIN attributes <a href="#I-D.ietf-tram-stun-origin">[I-D.ietf-tram-stun-origin]</a> carries the origin of the web page that caused the various STUN requests. So for example, if a browser was on a page such at example.com and that page used the WebRTC calls to set up a connection, the STUN request&#8217;s ORIGIN attribute would include example.com. This allows the firewall to see the web applications (in this case, example.com) that is requesting the pin hole be opened. The firewall MAY have a white list or black list for domain in STUN ORIGIN.</p>
-<h1 id="rfc.section.4.3"><a href="#rfc.section.4.3">4.3.</a> <a href="#creating-the-pin-hole-rules" id="creating-the-pin-hole-rules">Creating the pin hole rules</a></h1>
-<p id="rfc.section.4.3.p.1">Once a STUN packets it accepted, the firewall MUST create a temporary rules that allows incoming and outgoing packets for that 5 tuple for at least 5 seconds. If in that 5 seconds, a response is received to the STUN request, the lifetime of the rule must be extended to at least 30 seconds from last accepted STUN packet from inside the firewall. Once extended to 30 seconds, any additional UDP packets from inside the firewall MUST extend the lifetime of the rule by at least 30 seconds from the time of that packet was received. The procedures in <a href="#I-D.ietf-rtcweb-stun-consent-freshness">[I-D.ietf-rtcweb-stun-consent-freshness]</a> will ensure that an outbound packet is sent at least every 30 seconds.</p>
+<p id="rfc.section.4.2.p.1">Once the firewall has received a STUN packet from inside the firewall, it needs to decide if the packet is acceptable. For most situations the firewall SHOULD accept all outbound STUN packets. This is similar to allowing all outbound TCP flows. Some firewalls may choose to look at other factors including the outside UDP port and the ORIGIN attribute in the STUN packet.</p>
+<p id="rfc.section.4.2.p.2">In general WebRTC media can be sent on a wide range of UDP ports but the two ports that are commonly used are the the RTP port (5004) and TURN port (3478). Some firewalls MAY choose to only allow flows where the destination port on the outside of the firewall is one of these.</p>
+<p id="rfc.section.4.2.p.3">The STUN ORIGIN attribute <a href="#I-D.ietf-tram-stun-origin">[I-D.ietf-tram-stun-origin]</a> carries the origin of the web page that caused the various STUN requests. So for example, if a browser was on a page such as example.com and that page used the WebRTC calls to set up a connection, the STUN request&#8217;s ORIGIN attribute would include example.com. This allows the firewall to see the web application (in this case, example.com) that is requesting the pinhole be opened. The firewall MAY have a white list or black list for domains in STUN ORIGIN.</p>
+<h1 id="rfc.section.4.3"><a href="#rfc.section.4.3">4.3.</a> <a href="#creating-the-pinhole-rules" id="creating-the-pinhole-rules">Creating the pinhole rules</a></h1>
+<p id="rfc.section.4.3.p.1">Once a STUN packet is accepted, the firewall MUST create a temporary rule that causes the firewall to allow any inbound or outbound ICE messages on this 4-tuple. This pinhole MUST to be valid for at least 5 seconds from the time of creation.</p>
+<p id="rfc.section.4.3.p.2">The firewall keeps track of the STUN transaction ID for all STUN requests messages that traverse the 4 tuple along with the 5 tuple they were sent on and direction (inbound or outbound). If the firewall sees a STUN Success binding responses, with the same transaction ID, and on the same 5 tuple but in the opposite direction as the STUN request, then a valid ICE connectivity check has happened and the firewall MUST create a pinhole for this 5 tuple that allows any UDP traffic to flow across that 5 tuple. This pinhole MUST to be valid for at least 30 seconds from the time of creation.</p>
+<p id="rfc.section.4.3.p.3">The firewall continues watching ICE connectivity checks across this 5-tuple as described in the previous paragraph and anytime the a valid ICE connectivity check happens, this effectively extends the lifetime of the pinhole by 30 seconds. The procedures in <a href="#I-D.ietf-rtcweb-stun-consent-freshness">[I-D.ietf-rtcweb-stun-consent-freshness]</a> will ensure that an ICE connectivity check is done more often than every 30 seconds.</p>
 <h1 id="rfc.section.4.4"><a href="#rfc.section.4.4">4.4.</a> <a href="#tracking-media-vs-data" id="tracking-media-vs-data">Tracking media vs data</a></h1>
-<p id="rfc.section.4.4.p.1">WebRTC can send both audio and video as well as data channel. Confidential data could leave an enterprise by a video camera being pointed out a document but IT departments are often more concerned about the data channel. It is easy for the firewall to separately track the amount of RTP media and non media data for each WebRTC flow. By looking at the first byte of the UDP message, if it is 23 it is non media data while if it is in the range 127 to 192 it is audio or video data. More information about this can be found in <a href="#I-D.ietf-avtcore-rfc5764-mux-fixes">[I-D.ietf-avtcore-rfc5764-mux-fixes]</a>. Network management systems on the firewall can track these two separately which can help identify unusual usage.</p>
+<p id="rfc.section.4.4.p.1">WebRTC can send audio and video as well as carry a data channel. Confidential data could leave an enterprise by a video camera being pointed at a document, but IT departments are often more concerned about the data channel. It is easy for the firewall to separately track the amount of RTP media and non-media data for each WebRTC flow. If the first byte of the UDP message is 23, it is non-media data; if it is in the range 127 to 192 it is audio or video data. More information about this can be found in <a href="#I-D.ietf-avtcore-rfc5764-mux-fixes">[I-D.ietf-avtcore-rfc5764-mux-fixes]</a>. Network management systems on the firewall can track these two separately which can help identify unusual usage.</p>
 <h1 id="rfc.section.5"><a href="#rfc.section.5">5.</a> <a href="#webrtc-browsers" id="webrtc-browsers">WebRTC Browsers</a></h1>
-<p id="rfc.section.5.p.1">This specification would require browsers to include the FINGERPRINT and ORIGIN attributes in STUN for this to work correctly.</p>
-<p id="rfc.section.5.p.2">Open Issue: Does add the ORIGIN reduce user privacy. Consider the following case, the user goes to https://facebook.com and initiated a call with another facebook user. The domain facebook.com will appear (unencrypted) in the STUN packets sent from the browser to the facebook&#8217;s TURN server. Anyone along the network path could tell that the user is using facebook&#8217;s TURN server. However, when the original TLS connection for the HTTP was made, the Server Name Indication (SNI) in the TLS of the HTTPS connection also revealed facebook.com and this was done for largely the same reasons, so the Firewall would be able to see which applications were using the network.</p>
+<p id="rfc.section.5.p.1">Open Issue: how much randomness for ICE ufrag</p>
+<p/>
+
+<ul>
+  <li>ICE mandates at least 24 bits of randomness but we could require the browsers produce 64 bits of randomness</li>
+</ul>
+<p id="rfc.section.5.p.3">This specification would require browsers to include the FINGERPRINT and ORIGIN attributes in STUN for this to work correctly.</p>
+<p id="rfc.section.5.p.4">Open Issue: Does adding the ORIGIN reduce user privacy?</p>
+<p/>
+
+<ul>
+  <li>Consider the following case. The user goes to https://facebook.com and initiates a call with another Facebook user. The domain facebook.com will appear (unencrypted) in the STUN packets sent from the browser to Facebook&#8217;s TURN server. Anyone along the network path could tell that the user is using Facebook&#8217;s TURN server. However, when the original TLS connection for the HTTP was made, the Server Name Indication (SNI) in the TLS of the HTTPS connection also revealed facebook.com, largely for the same reasons - so that the firewall would be able to see which applications are using the network.</li>
+</ul>
 <h1 id="rfc.section.6"><a href="#rfc.section.6">6.</a> <a href="#blocking-media-hiding-in-http" id="blocking-media-hiding-in-http">Blocking Media Hiding in HTTP</a></h1>
-<p id="rfc.section.6.p.1">The IETF is designing systems to send interactive audio and video such that it looks like HTTPS and HTTP to the proxies and firewalls.  The reasons for doing this is that sometimes the proxies and firewalls allow this to work while the mechanisms and channels designed for sending audio and video data have been explicitly disabled by the firewall administrators. Many firewall administrators feel this circumvents the policy they are trying to enforce and desire way to prevent this. Any scheme for preventing this has some risk of impacting normal HTTP traffic so there is a desire to provide guidance around ways to do that here.</p>
-<p id="rfc.section.6.p.2">Any HTTP or HTTPS connection that sends more than 10 requests per second for longer than 10 seconds should be paused for 1 second and any HTTP/S requests from that clients IP address in the 1 second pause time buffered or simply dropped. This strategy ensure there is no impact to clients other than the one doing this and minimizes the impact to other applications on the device while still reducing the incentive to try and run calls this way.</p>
+<p id="rfc.section.6.p.1">The IETF is designing systems to send interactive audio and video such that it looks like HTTPS and HTTP to the proxies and firewalls.  The reasons for doing this is that sometimes the proxies and firewalls allow this to work when the mechanisms and channels designed for sending audio and video data have been explicitly disabled by the firewall administrators. Many firewall administrators feel this circumvents the policy they are trying to enforce and desire a way to prevent this. Any scheme for preventing this has some risk of impacting normal HTTP traffic, so there is a desire to provide guidance around ways to do that in this draft.</p>
+<p id="rfc.section.6.p.2">Any HTTP or HTTPS connection that sends more than 10 requests per second for longer than 10 seconds should be paused for 1 second, and any HTTP/S requests from that client&#8217;s IP address in the 1 second pause time should be buffered or simply dropped. This strategy ensures there is no impact to clients other than the one exceeding the rate limit and minimizes the impact to other applications on the device while still reducing the incentive to try and run calls this way.</p>
 <h1 id="rfc.section.7"><a href="#rfc.section.7">7.</a> <a href="#deployment-advice" id="deployment-advice">Deployment Advice</a></h1>
 <h1 id="rfc.section.7.1"><a href="#rfc.section.7.1">7.1.</a> <a href="#webrtc-servers" id="webrtc-servers">WebRTC Servers</a></h1>
-<p id="rfc.section.7.1.p.1">WebRTC media server and TURN server with public IP address that can receive incoming packets from anywhere on the Internet are suggested to listen for UDP on ports 53 (DNS), 123(NTP), and 5004 for RTP media servers and 3478 for TURN servers. UDP destined to port 53 or 123 often is allowed by firewalls that otherwise block UDP.</p>
+<p id="rfc.section.7.1.p.1">WebRTC media servers and TURN servers with public IP address(es) that can receive incoming packets from anywhere on the Internet are suggested to listen for UDP on ports 53 (DNS), 123 (NTP), and 5004 for RTP media servers and 3478 for TURN servers. UDP destined for port 53 or 123 if often allowed by firewalls that otherwise block UDP.</p>
 <h1 id="rfc.section.7.2"><a href="#rfc.section.7.2">7.2.</a> <a href="#firewall-admins" id="firewall-admins">Firewall Admins</a></h1>
-<p id="rfc.section.7.2.p.1">Often the approach has been to lock down everything that does not have to absolutely not be locked down and all UDP is blocked. This simply causes applications to do things like embed the data in normal looking HTTP or HTTPS requests. Malware and viruses simply use other approach. Just turning off all UDP results in a crappy user experience some of the time which results in the users moving to applications and devices outside the firewall. The IT department looses the visibility into what is going on and can no longer protect their users when their computers become compromised. Allowing things that users want to use to work and monitoring them to detect when things have gone wrong can be very valuable.</p>
+<p id="rfc.section.7.2.p.1">Often the approach has been to lock down everything, so that all UDP is blocked. This simply causes applications to do things like embed the data in normal looking HTTP or HTTPS requests. Malware and viruses use similar approaches. Just turning off all UDP results in a poor user experience some of the time, which results in users moving to applications and devices outside the firewall. The IT department loses the visibility into what is going on and can no longer protect its users when their computers become compromised. Allowing things that users want to use to work and monitoring them to detect when things have gone wrong is very valuable.</p>
 <h1 id="rfc.section.8"><a href="#rfc.section.8">8.</a> <a href="#design-consideration" id="design-consideration">Design Consideration</a></h1>
 <h1 id="rfc.section.8.1"><a href="#rfc.section.8.1">8.1.</a> <a href="#why-not-just-use-tcp" id="why-not-just-use-tcp">Why not just use TCP?</a></h1>
 <p id="rfc.section.8.1.p.1">TODO</p>
@@ -555,26 +592,27 @@
 
 <ol>
   <li>Unlike TCP, UDP does not have a connection where a device inside the firewall has confirmed that it wants to talk to the thing outside.</li>
-  <li>Incoming UDP pinholes allow out of band packets to be spoofed into the connecting as there is no equivalent of TCP sequence number to check</li>
+  <li>Incoming UDP pinholes allow out of band packets to be spoofed into connecting as there is no equivalent of a TCP sequence number to check.</li>
   <li>UDP has been used by malware command and control protocols so we block it.</li>
-  <li>Do not want enable ways for data to be exfiltrated outside the firewall with no monitoring</li>
-  <li>An encrypted data channel in WebRTC can be used to bring malware into the company</li>
-  <li>An encrypted data channel in WebRTC can be used by an outside attacker to upload private files from inside the firewall</li>
+  <li>We do not want enable ways for data to be exfiltrated outside the firewall with no monitoring.</li>
+  <li>An encrypted data channel in WebRTC can be used to bring malware into the company.</li>
+  <li>An encrypted media or data channel in WebRTC can be used as a command and control channel for malware inside the firewall.</li>
+  <li>An encrypted data channel in WebRTC can be used by an outside attacker to exfiltrate private files from inside the firewall.</li>
 </ol>
 <h1 id="rfc.section.10"><a href="#rfc.section.10">10.</a> <a href="#alternate-approaches" id="alternate-approaches">Alternate Approaches</a></h1>
 <h1 id="rfc.section.10.1"><a href="#rfc.section.10.1">10.1.</a> <a href="#firewall-auth-tokens" id="firewall-auth-tokens">Firewall Auth Tokens</a></h1>
-<p><a href="#I-D.reddy-rtcweb-stun-auth-fw-traversal">[I-D.reddy-rtcweb-stun-auth-fw-traversal]</a> attempts to solve a similar problem by proposing a new comprehension-optional FW-FLOWDATA STUN attribute as part of ICE Connectivity checks enabling the firewall to permit outgoing UDP flows across the firewall. FW-FLOWDATA STUN provides necessary information, such as lifetime, candidate information , enabling a firewall to apply the required policy rules. However, <a href="#I-D.reddy-rtcweb-stun-auth-fw-traversal">[I-D.reddy-rtcweb-stun-auth-fw-traversal]</a> requires establishing shared keys across the firewall(s) and the WebRTC server for successfully verifying the authenticity of the FW-FLOWDATA information.  In summary, we believe <a href="#I-D.reddy-rtcweb-stun-auth-fw-traversal">[I-D.reddy-rtcweb-stun-auth-fw-traversal]</a> to have following short-comings</p>
+<p><a href="#I-D.reddy-rtcweb-stun-auth-fw-traversal">[I-D.reddy-rtcweb-stun-auth-fw-traversal]</a> attempts to solve a similar problem by proposing a new comprehension-optional FW-FLOWDATA STUN attribute as part of ICE Connectivity checks enabling the firewall to permit outgoing UDP flows across the firewall. FW-FLOWDATA STUN provides necessary information, such as lifetime, and candidate information, enabling a firewall to apply the required policy rules. However, <a href="#I-D.reddy-rtcweb-stun-auth-fw-traversal">[I-D.reddy-rtcweb-stun-auth-fw-traversal]</a> requires establishing shared keys across the firewall(s) and the WebRTC server for successfully verifying the authenticity of the FW-FLOWDATA information.  In summary, we believe <a href="#I-D.reddy-rtcweb-stun-auth-fw-traversal">[I-D.reddy-rtcweb-stun-auth-fw-traversal]</a> to have following short-comings</p>
 <p/>
 
 <ol>
   <li>Requiring a tight coupling between the application server (WebRTC server) and firewall(s)</li>
-  <li>Requiring additional efforts for Firewall Admins within a enterprise to distribute and maintain the shared authentication keys needed to generate authentication tag for the FW-FLOWDATA attribute.</li>
+  <li>Requiring additional efforts for Firewall Admins within an enterprise to distribute and maintain the shared authentication keys needed to generate authentication tags for the FW-FLOWDATA attribute.</li>
   <li><a href="#I-D.reddy-rtcweb-stun-auth-fw-traversal">[I-D.reddy-rtcweb-stun-auth-fw-traversal]</a> doesn&#8217;t apply for distributing keys across firewalls in different administrative domains.</li>
 </ol>
 <h1 id="rfc.section.10.2"><a href="#rfc.section.10.2">10.2.</a> <a href="#any-cast-whitelist" id="any-cast-whitelist">Any Cast Whitelist</a></h1>
 <p id="rfc.section.10.2.p.1">Deploying media or TURN servers on a single any-cast IP address also makes it easier for firewall administrators to whitelist the address. Concerns have been raised that two packets sent from the same host to a given any-cast address may get delivered to different servers.  This is certainly possible in theory but in practice it does not seem be happen in limited experiments done so far.</p>
 <h1 id="rfc.section.11"><a href="#rfc.section.11">11.</a> <a href="#acknowledgements" id="acknowledgements">Acknowledgements</a></h1>
-<p id="rfc.section.11.p.1">Many thanks to &#8230;</p>
+<p id="rfc.section.11.p.1">Many thanks to Shaun Cooley and Alissa Cooper.</p>
 <h1 id="rfc.references"><a href="#rfc.references">12.</a> References</h1>
 <h1 id="rfc.references.1"><a href="#rfc.references.1">12.1.</a> Normative References</h1>
 <table>
@@ -620,6 +658,27 @@
   <a href="#rfc.authors">Authors' Addresses</a>
 </h1>
 <div class="avoidbreak">
+  <address class="vcard">
+	<span class="vcardline">
+	  <span class="fn">Pradeep Patel</span> 
+	  <span class="n hidden">
+		<span class="family-name">Patel</span>
+	  </span>
+	</span>
+	<span class="org vcardline">Cisco</span>
+	<span class="adr">
+	  
+	  <span class="vcardline">
+		<span class="locality"></span> 
+		<span class="region"></span>
+		<span class="code"></span>
+	  </span>
+	  <span class="country-name vcardline"></span>
+	</span>
+	<span class="vcardline">EMail: <a href="mailto:pradpate@cisco.com">pradpate@cisco.com</a></span>
+
+  </address>
+</div><div class="avoidbreak">
   <address class="vcard">
 	<span class="vcardline">
 	  <span class="fn">Cullen Jennings</span> 
@@ -680,6 +739,27 @@
 	  <span class="country-name vcardline"></span>
 	</span>
 	<span class="vcardline">EMail: <a href="mailto:jdrosen@cisco.com">jdrosen@cisco.com</a></span>
+
+  </address>
+</div><div class="avoidbreak">
+  <address class="vcard">
+	<span class="vcardline">
+	  <span class="fn">Dan Wing</span> 
+	  <span class="n hidden">
+		<span class="family-name">Wing</span>
+	  </span>
+	</span>
+	<span class="org vcardline">Cisco</span>
+	<span class="adr">
+	  
+	  <span class="vcardline">
+		<span class="locality"></span> 
+		<span class="region"></span>
+		<span class="code"></span>
+	  </span>
+	  <span class="country-name vcardline"></span>
+	</span>
+	<span class="vcardline">EMail: <a href="mailto:dwing@cisco.com">dwing@cisco.com</a></span>
 
   </address>
 </div>
