@@ -1,6 +1,6 @@
-# |DRAFT-TITLE|
+# draft-jennings-behave-rtcweb-firewall
 
-* [Editor's copy](https://|THIS-USER|.github.io/iceTrav/)
+* [Editor's copy](https://fluffy.github.io/iceTrav/)
 * [Working Group Draft] (https://tools.ietf.org/html/draft-jennings-behave-rtcweb-firewall)
 
 
