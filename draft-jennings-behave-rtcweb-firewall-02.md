@@ -2,7 +2,7 @@
 title: Firewall Traversal for WebRTC
 abbrev: WebRTC Firewall
 docname: draft-jennings-behave-rtcweb-firewall-02
-date: 2015-07-27
+date: 2015-08-12
 category: info
 
 ipr: trust200902
@@ -179,7 +179,10 @@ Consequently, the solution proposed here relies on the ICE
 connectivity checks, which provide a similar handshake and ensure
 consent of the remote party.
 
-The firewall looks for an outbound ICE connectivity check and allows
+The firewall looks for an initial STUN check to learn which
+applications is using the port (based on the STUN ORIGIN
+atribute). Next the firewall watches the outbound ICE connectivity
+check on that port  and allows
 inbound ICE connectivity checks that are going to the same location
 that sent the outbound request and that have the correct random ufrag value
 that was created by the client inside the firewall.  After a
@@ -206,8 +209,8 @@ sending to did a stun consent handshake
 Firewall Processing
 ==============
 
-The firewall processing is broken into three stages: recognizing STUN
-packets, making a policy decision as to whether each STUN packet
+The firewall processing is broken into four stages: recognizing STUN
+packets, mapping to an application, making a policy decision as to whether each STUN packet
 should trigger a pinhole to be created, and managing the lifetime of
 any pinholes that are created.
 
@@ -259,6 +262,24 @@ think we are more in the MUST not category.
 Open Issue:
 * Should do the analysis to see what harm comes of treating random
   packets as STUN packets. 
+
+
+
+Application Mapping
+-----------------
+
+Other specification have specified that when WebRTC browsers send
+STUN checks to to a STUN server where the name of the STUN server
+matches the name of the http origin for the web page, then the
+browsers will include the that name in the STUN ORIGIN attribute. So
+if a web applications such as example.com is starts a WebRTC session,
+and has appropriate named STUN servers, then then the firewall can
+detect this session is associated with example.com. Systems other than
+WebRTC can do the same thing. 
+
+Open Issue: Make sure the drafts are modified to actually say what is
+claimed in above paragraph but this was agreed to at IETF 93. 
+
 
 
 
