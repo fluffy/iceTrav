@@ -182,13 +182,13 @@ consent of the remote party.
 The firewall looks for an initial STUN check to learn which
 applications is using the port (based on the STUN ORIGIN
 atribute). Next the firewall watches the outbound ICE connectivity
-check on that port  and allows
-inbound ICE connectivity checks that are going to the same location
-that sent the outbound request and that have the correct random ufrag value
-that was created by the client inside the firewall.  After a
-successful ICE connectivity check, the firewall allows other media to
-flow on the same 5 tuple that had the successful ICE connectivity
-check.  Timers are used to removed the various pinholes created.
+check on that port and allows inbound ICE connectivity checks that are
+going to the same location that sent the outbound request and that
+have the correct random ufrag value that was created by the client
+inside the firewall.  After a successful ICE connectivity check, the
+firewall allows other media to flow on the same 5 tuple that had the
+successful ICE connectivity check.  Timers are used to removed the
+various pinholes created.
 
 In addition, the initial outbound STUN packets can contain the STUN
 ORIGIN field which the firewall can use to make an authorization
@@ -372,7 +372,7 @@ WebRTC Browsers
 Open Issue: how much randomness for ICE ufrag
 
 * ICE mandates at least 24 bits of randomness but we could require the
-browsers produce 64 bits of randomness
+browsers produce 64 bits of randomness?
 
 This specification would require browsers to include the FINGERPRINT
 and ORIGIN attributes in STUN for this to work correctly.
@@ -423,7 +423,6 @@ the visibility into what is going on and can no longer protect its
 users when their computers become compromised. Allowing things that
 users want to use to work and monitoring them to detect when things
 have gone wrong is very valuable.
-
 
 
 Design Consideration
