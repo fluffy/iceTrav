@@ -179,7 +179,7 @@ Consequently, the solution proposed here relies on the ICE
 connectivity checks, which provide a similar handshake and ensure
 consent of the remote party.
 
-The firewall looks for an initial STUN check to learn which
+The firewall looks for an initial STUN transaction to learn which
 applications is using the port (based on the STUN ORIGIN
 atribute). Next the firewall watches the outbound ICE connectivity
 check on that port and allows inbound ICE connectivity checks that are
