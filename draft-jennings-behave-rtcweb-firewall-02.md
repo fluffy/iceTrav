@@ -210,9 +210,9 @@ Firewall Processing
 ==============
 
 The firewall processing is broken into four stages: recognizing STUN
-packets, mapping to an application, making a policy decision as to whether each STUN packet
-should trigger a pinhole to be created, and managing the lifetime of
-any pinholes that are created.
+packets, mapping to an application, making a policy decision as to
+whether each STUN packet should trigger a pinhole to be created, and
+managing the lifetime of any pinholes that are created.
 
 The term 3-tuple is used to refer to IP address, protocol (which is
 always UPD), and port that the firewall sees as the address of the
@@ -257,30 +257,52 @@ Firewalls that desire fewer false positives MAY also check that the
 FINGERPRINT attribute is correct. Open Issue: MAY, MUST, MUST NOT -
 what do we want here. If we put MAY or MUST, then browsers MUST
 include this. If browsers are not required to provide this then I
-think we are more in the MUST not category.
+think we are more in the MUST not category. If we do not use the
+fingerprint, there will be some small number of false positives. 
 
 Open Issue:
 * Should do the analysis to see what harm comes of treating random
-  packets as STUN packets. 
+packets as STUN packets.
+* CJ Proposal: Browses MUST send the fingerprint when sending STUN
+  messages to STUN server but MAY use it when doing ICE connectivity
+  checks. This is to help save bandwidth as Justin Uberti was
+  sugesting that change from approximately 50kbps to 100 kbps for ICE
+  makes big difference for mobile devices.
 
+
+Open Issue: Do we want to discuss TURN over DTLS and using ALPN to
+detect TURN traffic along with SNI in place or the ORGIN attribute. 
 
 
 Application Mapping
 -----------------
 
-Other specification have specified that when WebRTC browsers send
-STUN checks to to a STUN server where the name of the STUN server
-matches the name of the http origin for the web page, then the
-browsers will include the that name in the STUN ORIGIN attribute. So
-if a web applications such as example.com is starts a WebRTC session,
-and has appropriate named STUN servers, then then the firewall can
-detect this session is associated with example.com. Systems other than
-WebRTC can do the same thing. 
+The STUN ORIGIN attribute {{I-D.ietf-tram-stun-origin}} carries the
+origin of the web page that caused the various STUN requests. So for
+example, if a browser was on a page such as example.com and that page
+used the WebRTC calls to set up a connection, the STUN request's
+ORIGIN attribute would have the value example.com if the STUN server
+was named appropriately. So if a web applications such as example.com
+is starts a WebRTC session, and has appropriate named STUN servers,
+then then the firewall can detect this session is associated with
+example.com. Systems other than WebRTC can do the same thing. This
+allows the firewall to map the stun port to the application using it
+and use that for logging and policy decisions.
 
 Open Issue: Make sure the drafts are modified to actually say what is
-claimed in above paragraph but this was agreed to at IETF 93. 
+claimed in above paragraph but this was agreed to at IETF 93.
 
+Once the Firewall receives as STUN packet from the inside to the
+outside on a new 3-tuple. It MUST create an internal record to track
+any additional traffic on this 3-tuple. If the STUN packets contains
+an ORIGIN attribute then the value it contains is saved in this record
+and referred to as the applications name. Firewall might wish to put
+the application name in the log files for this 3-tuple.
 
+It is important to realize that any application inside the firewall
+can lie about the value of the ORIGIN attribute. However, a web
+browser that is trusted will not allow the Javascript running in the
+web browser lie about the value of the ORIGIN. 
 
 
 Policy decision
@@ -290,22 +312,16 @@ Once the firewall has received a STUN packet from inside the firewall,
 it needs to decide if the packet is acceptable. For most situations
 the firewall SHOULD accept all outbound STUN packets. This is similar
 to allowing all outbound TCP flows. Some firewalls may choose to look
-at other factors including the outside UDP port and the ORIGIN
-attribute in the STUN packet.
+at other factors including the outside UDP port and the application
+name for this 3-tuple.
 
 In general WebRTC media can be sent on a wide range of UDP ports but
 the two ports that are commonly used are the the RTP port (5004) and
 TURN port (3478). Some firewalls MAY choose to only allow flows where
 the destination port on the outside of the firewall is one of these.
 
-The STUN ORIGIN attribute {{I-D.ietf-tram-stun-origin}} carries the
-origin of the web page that caused the various STUN requests. So for
-example, if a browser was on a page such as example.com and that page
-used the WebRTC calls to set up a connection, the STUN request's
-ORIGIN attribute would include example.com. This allows the firewall
-to see the web application (in this case, example.com) that is
-requesting the pinhole be opened. The firewall MAY have a white list
-or black list for domains in STUN ORIGIN.
+Some firewalls MAY decide to white or blacklist media based on the
+application name. 
 
 
 Creating the pinhole rules
@@ -373,7 +389,11 @@ Name Indication (SNI) in the TLS of the HTTPS connection also revealed
 facebook.com, largely for the same reasons - so that the firewall
 would be able to see which applications are using the network.
 
-TOOD: Redo ORIGIN based off a HOST with match origin type flag
+* This proposal is now based on the idea that the web browser would
+only include a ORIGIN attribute when the STUN server name matched the
+name of the HTTP ORIGIN. This further reduces any privacy concerns.
+
+TOOD: Could redo ORIGIN based off a HOST with match origin type flag
 
 
 Deployment Advice
