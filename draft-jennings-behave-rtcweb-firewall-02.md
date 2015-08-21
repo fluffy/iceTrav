@@ -2,7 +2,7 @@
 title: Firewall Traversal for WebRTC
 abbrev: WebRTC Firewall
 docname: draft-jennings-behave-rtcweb-firewall-02
-date: 2015-08-12
+date: 2015-08-21
 category: info
 
 ipr: trust200902
@@ -45,11 +45,12 @@ author:
 normative:
   I-D.ietf-tram-stun-origin:
   I-D.ietf-avtcore-rfc5764-mux-fixes:
+  RFC2119:
  
 informative:
   I-D.ietf-rtcweb-overview:
   I-D.ietf-rtcweb-stun-consent-freshness:
-  I-D.reddy-rtcweb-stun-auth-fw-traversal:
+  RFC4787:
 
 --- abstract
 
@@ -64,7 +65,7 @@ middleboxes.
 
 
 Problem Statement
-=========
+=============
 
 WebRTC {{I-D.ietf-rtcweb-overview}} based voice and video
 communications systems are becoming far more common inside
@@ -127,7 +128,7 @@ WebRTC by enterprise applications, which provide a ready source of RTP
 traffic which often needs to traverse the firewall.
 
 Solution Requirements
-=====================
+================
 
 We believe the solution must meet the following requirements:
 
@@ -166,7 +167,7 @@ this for non-WebRTC is a non-requirement.
 
 
 Solution Overview
-=================
+============
 
 Many of the reasons for blocking UDP at the corporate firewall have
 their origins in the lack of a three-way handshake for UDP
@@ -181,7 +182,7 @@ consent of the remote party.
 
 The firewall looks for an initial STUN transaction to learn which
 applications is using the port (based on the STUN ORIGIN
-atribute). Next the firewall watches the outbound ICE connectivity
+attribute). Next the firewall watches the outbound ICE connectivity
 check on that port and allows inbound ICE connectivity checks that are
 going to the same location that sent the outbound request and that
 have the correct random ufrag value that was created by the client
@@ -213,6 +214,11 @@ The firewall processing is broken into four stages: recognizing STUN
 packets, mapping to an application, making a policy decision as to
 whether each STUN packet should trigger a pinhole to be created, and
 managing the lifetime of any pinholes that are created.
+
+Terminology
+----------
+
+The key  words defined in {{RFC2119}} are used in this specification.
 
 The term 3-tuple is used to refer to IP address, protocol (which is
 always UPD), and port that the firewall sees as the address of the
@@ -248,29 +254,28 @@ source address port and protocol=UDP and for the next 30 seconds
 checks any packets from this 3 tuple to see if they are ICE
 connectivity checks. 
 
-Open Issue:
+Open Issues:
+
 * decide between option A and B. A requires looking at all UDP packets
 but will likely work better than B. Most firewalls look at all TCP
 packets so probably not too big of a deal.
 
-Firewalls that desire fewer false positives MAY also check that the
-FINGERPRINT attribute is correct. Open Issue: MAY, MUST, MUST NOT -
-what do we want here. If we put MAY or MUST, then browsers MUST
-include this. If browsers are not required to provide this then I
-think we are more in the MUST not category. If we do not use the
-fingerprint, there will be some small number of false positives. 
+* MAY, MUST, MUST NOT look at FINGERPRINT - what do we want here. If we
+put MAY or MUST, then browsers MUST include this. If browsers are not
+required to provide this then I think we are more in the MUST NOT
+category. If we do not use the fingerprint, there will be some small
+number of false positives.
 
-Open Issue:
 * Should do the analysis to see what harm comes of treating random
 packets as STUN packets.
-* CJ Proposal: Browses MUST send the fingerprint when sending STUN
+
+* CJ Proposal: Browsers MUST send the fingerprint when sending STUN
   messages to STUN server but MAY use it when doing ICE connectivity
   checks. This is to help save bandwidth as Justin Uberti was
-  sugesting that change from approximately 50kbps to 100 kbps for ICE
+  suggesting that change from approximately 50kbps to 100 kbps for ICE
   makes big difference for mobile devices.
 
-
-Open Issue: Do we want to discuss TURN over DTLS and using ALPN to
+* Do we want to discuss TURN over DTLS and using ALPN to
 detect TURN traffic along with SNI in place or the ORGIN attribute. 
 
 
@@ -289,7 +294,9 @@ example.com. Systems other than WebRTC can do the same thing. This
 allows the firewall to map the stun port to the application using it
 and use that for logging and policy decisions.
 
-Open Issue: Make sure the drafts are modified to actually say what is
+Open Issue:
+
+* Make sure the drafts are modified to actually say what is
 claimed in above paragraph but this was agreed to at IETF 93.
 
 Once the Firewall receives as STUN packet from the inside to the
@@ -344,10 +351,12 @@ at least 30 seconds from the time of creation.
 
 The firewall continues watching ICE connectivity checks across this
 5-tuple as described in the previous paragraph and anytime the a valid
-ICE connectivity check happens, this effectively extends the lifetime
-of the pinhole by 30 seconds. The procedures in
+ICE connectivity check happens, this effectively extends the lifetime of
+the pinhole by 30 seconds. The procedures in
 {{I-D.ietf-rtcweb-stun-consent-freshness}} will ensure that an ICE
-connectivity check is done more often than every 30 seconds.
+connectivity check is done more often than every 30 seconds. This is
+designed to make things work with behave compliant NATS and Firewalls as
+specified in {{RFC4787}}.
 
 
 Media vs Data Statistics
@@ -367,7 +376,7 @@ unusual usage.
 
 
 WebRTC Browsers
-===============
+============
 
 Open Issue: how much randomness for ICE ufrag
 
@@ -393,11 +402,14 @@ would be able to see which applications are using the network.
 only include a ORIGIN attribute when the STUN server name matched the
 name of the HTTP ORIGIN. This further reduces any privacy concerns.
 
-TOOD: Could redo ORIGIN based off a HOST with match origin type flag
+Open Issue:
+
+* Could redo ORIGIN based off a HOST attribute with match origin type
+  flag
 
 
 Deployment Advice
-==============
+=============
 
 
 WebRTC Servers
@@ -411,7 +423,7 @@ or 123 if often allowed by firewalls that otherwise block UDP.
 
 
 Firewall Admins
----------------
+-------------
 
 Often the approach has been to lock down everything, so that all UDP
 is blocked. This simply causes applications to do things like embed
@@ -433,7 +445,12 @@ Why not just use TCP?
 
 TODO
 
-Security Concerns 
+IANA Considerations
+==============
+
+This draft does not require any IANA actions. 
+
+Security Considerations 
 =================
 
 
@@ -464,8 +481,14 @@ of the firewall. The major concerns that are raised include:
    attacker to exfiltrate private files from inside the firewall.
 
 
+TODO - Describe to what degree theses are addressed. Be clear about attacks due
+to Javascript inside the firewall and attacks due to executables inside the
+firewall.
+
+
 Alternate Approaches 
-=====================
+===============
+
 
 SDN Control of Firewall
 --------------------
@@ -481,7 +504,8 @@ trusts a website outside the firewall wall enough to let it tell the
 controller to open wholes in the Firewall.
 
 SDN based approaches should be pursued as well as this approach as they
-compliment each other. 
+compliment each other.
+
 
 Any Cast White List
 ---------------
@@ -495,11 +519,7 @@ not seem be happen in limited experiments done so far.
 
 
 Acknowledgements
-================
+=============
 
-Many thanks to Shaun Cooley and Alissa Cooper.
-
-
-
-
+Many thanks to review from Shaun Cooley, Teh Cheng, and Alissa Cooper.
 
