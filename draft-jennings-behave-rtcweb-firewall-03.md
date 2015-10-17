@@ -2,7 +2,7 @@
 title: Firewall Traversal for WebRTC
 abbrev: WebRTC Firewall
 docname: draft-jennings-behave-rtcweb-firewall-03
-date: 2015-08-27
+date: 2015-10-17
 category: info
 
 ipr: trust200902
