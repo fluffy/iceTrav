@@ -283,7 +283,7 @@ Application Mapping
 -----------------
 
 The STUN HOST attribute {{sec-stun_host}} carries the fully qualified
-domain name of STUN server that is being contacted in the STUN
+domain name of the STUN server that is being contacted in the STUN
 requests. So for example, if a browser was on a page such as example.com
 and that page used the WebRTC calls to set up a connection to
 stun.example.com, the STUN request's HOST attribute would have the value
@@ -291,7 +291,7 @@ stun.example.com. Similarly when contacting a STUN or TURN server over
 TLS or DTLS, the TLS SNI {{RFC6066}} value provides the name of the
 host. For systems that provide a unique STUN server name for each
 application, this allows the firewall to map the stun port to the
-application using it and use that for logging and policy decisions.
+application using it and use that for logging and making any policy decisions.
 
 Once the Firewall receives as STUN packet from the inside to the outside
 on a new 3-tuple. It MUST create an internal record to track any
@@ -336,9 +336,9 @@ seconds from the time of creation.
 The firewall keeps track of the STUN transaction ID for all STUN
 requests messages that traverse the 4 tuple along with the 5 tuple they
 were sent on and direction (inbound or outbound). If the firewall sees a
-STUN Success binding responses, with the same transaction ID, and on the
+STUN Success binding responses, with the matching transaction ID, and on the
 same 5 tuple but in the opposite direction as the STUN request, then a
-valid ICE connectivity check has happened and the firewall MUST create a
+valid ICE connectivity check has happened. Then the firewall MUST create a
 pinhole for this 5 tuple that allows any UDP traffic to flow across that
 5 tuple. This pinhole MUST to be valid for at least 30 seconds from the
 time of creation.
@@ -349,7 +349,7 @@ ICE connectivity check happens, this effectively extends the lifetime of
 the pinhole by 30 seconds. The procedures in
 {{I-D.ietf-rtcweb-stun-consent-freshness}} will ensure that an ICE
 connectivity check is done more often than every 30 seconds. This is
-designed to make things work with behave compliant NATS and Firewalls as
+designed to make things work with behave compliant NATs and Firewalls as
 specified in {{RFC4787}}.
 
 
@@ -372,8 +372,8 @@ WebRTC Browsers
 ============
 
 This specification would require browsers to include the FINGERPRINT and
-HOST attributes in STUN requests to a STUN server used to gather
-candidates for this to work correctly. Note they would not need to be
+the HOST attributes in STUN requests to a STUN server used to gather
+candidates for this to work correctly. Note they MUST not be
 included in STUN requests sent peer to peer or sent to ensure media
 consent.
  
@@ -399,10 +399,9 @@ Open Issue: Would only including HOST when it matched the HTTP ORIGIN
 improve privacy?
 
 * We could make this so that when used with WebRTC browsers, the HOST is
-  only included in the STUN check when the name of the STUN servers
+  only included in the STUN messages when the name of the STUN servers
   matches the HTTP ORIGIN of the web page initiating the STUN
   request. It is not clear if this would improve privacy or not.
-
 
 
 STUN HOST attribute {#sec-stun_host}
@@ -417,10 +416,8 @@ characters.
 The HOST attribute identifies the fully qualified domain name of the
 application provider that is serving the WebRTC application and also
 operating the STUN server. The WebRTC EndPoint MUST include this
-attribute as part of ICE candidate gathering checks. There MUST be only
-one HOST attribute in a given ICE connectivity check and MUST be
-included before the MESSAGE-INTEGRITY attribute to ensure its integrity.
-
+attribute as part of the ICE candidate gathering phase and there MUST be only
+one HOST attribute in a given STUN binding request.
 
 Deployment Advice
 =============
@@ -461,7 +458,7 @@ TODO
 IANA Considerations
 ==============
 
-IANA is requested to add the HOST attributes to the STUN attribute
+IANA is requested to add the HOST attribute to the STUN attribute
 registry. The values for HOST is to be allocated from the expert review
 comprehension-optional range of (0xC000 - 0xFFFF).
 
@@ -555,6 +552,6 @@ Acknowledgements
 Many thanks to review from Shaun Cooley, Teh Cheng, and Alissa Cooper.
 
 The definition of HOST STUN attribute was motivated by discussion around
-the draft-ietf-tram-stun-origin document and we want to thanks Alan
+the draft-ietf-tram-stun-origin document and we want to thank Alan
 Johnston, Justin Uberti, John Yoakum, and Kundan Singh.
 
