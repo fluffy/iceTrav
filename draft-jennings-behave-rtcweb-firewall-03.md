@@ -185,14 +185,15 @@ Consequently, the solution proposed here relies on the ICE
 connectivity checks, which provide a similar handshake and ensure
 consent of the remote party.
 
-The firewall looks for an initial STUN transaction to learn which
-application is using the port (based on the STUN HOST
-attribute {{sec-stun_host}}). Next the firewall watches the outbound ICE connectivity check on that port and allows inbound ICE connectivity checks that are going to the same location that sent the outbound request and that
-have the correct random ufrag value that was created by the client
-inside the firewall.  After a successful ICE connectivity check, the
-firewall allows other media to flow on the same 5 tuple that had the
-successful ICE connectivity check.  Timers are used to removed the
-various pinholes created.
+The firewall looks for an initial STUN transaction to learn which application is
+using the port (based on the STUN HOST attribute {{sec-stun_host}}). Next the
+firewall watches the outbound ICE connectivity check on that port and allows
+inbound ICE connectivity checks that are going to the same location that sent
+the outbound request and that have the correct random ufrag value that was
+created by the client inside the firewall.  After a successful ICE connectivity
+check, the firewall allows other media to flow on the same 5 tuple that had the
+successful ICE connectivity check.  Timers are used to removed the various
+pinholes created.
 
 In addition, the initial outbound STUN packets can contain the STUN
 HOST attribute which the firewall can use to make an authorization
@@ -285,13 +286,16 @@ detect TURN traffic along with SNI in place or the ORGIN attribute.
 Application Mapping
 -----------------
 
-The STUN HOST attribute {{sec-stun_host}} carries the
-fully qualified domain name of host that is serving the web page 
-that caused the various STUN requests. So for example, if a browser was 
-on a page such as example.com and that page used the WebRTC calls to set 
-up a connection, the STUN request's HOST attribute would have the value 
-example.com if the STUN server was named appropriately. So if a web application such as example.com starts a WebRTC session, and has appropriate named STUN servers, then then the firewall can detect this session is associated with example.com. Systems other than WebRTC can do the same thing. This allows the firewall to map the stun port to the application using it
-and use that for logging and policy decisions.
+The STUN HOST attribute {{sec-stun_host}} carries the fully qualified domain
+name of host that is serving the web page that caused the various STUN
+requests. So for example, if a browser was on a page such as example.com and
+that page used the WebRTC calls to set up a connection, the STUN request's HOST
+attribute would have the value example.com if the STUN server was named
+appropriately. So if a web application such as example.com starts a WebRTC
+session, and has appropriate named STUN servers, then then the firewall can
+detect this session is associated with example.com. Systems other than WebRTC
+can do the same thing. This allows the firewall to map the stun port to the
+application using it and use that for logging and policy decisions.
 
 Open Issue:
 
@@ -411,10 +415,15 @@ of type comprehension-optional. The value of the HOST attribute is a
 variable length value. It MUST contain a UTF-8 {{RFC3629}} encoded sequence 
 of characters.
 
-The HOST attribute identifies the fully qualified domain name of the application provider that is serving the WebRTC application and also 
-operating the STUN server. The WebRTC EndPoint MUST include this attribute 
-as part of ICE Connectivity checks only and no other STUN usages. The contents of this attriubute MUST match the host part of the {{RFC6454}}  Origin header field for an HTTP request  generated from the web page that is creating the Peer Connection. There MUST be only one HOST attribute in a given ICE connectivty check and MUST be included before the MESSAGE-INTEGRITY attribute
-to ensure its integrity and authenticaticity.
+The HOST attribute identifies the fully qualified domain name of the application
+provider that is serving the WebRTC application and also operating the STUN
+server. The WebRTC EndPoint MUST include this attribute as part of ICE
+Connectivity checks only and no other STUN usages. The contents of this
+attriubute MUST match the host part of the {{RFC6454}} Origin header field for
+an HTTP request generated from the web page that is creating the Peer
+Connection. There MUST be only one HOST attribute in a given ICE connectivty
+check and MUST be included before the MESSAGE-INTEGRITY attribute to ensure its
+integrity and authenticaticity.
 
 
 Deployment Advice
@@ -549,5 +558,7 @@ Acknowledgements
 
 Many thanks to review from Shaun Cooley, Teh Cheng, and Alissa Cooper.
 
-The defintion of HOST STUN attribute was motivated by {{I-D.ietf-tram-stun-origin}} specification and we want to thanks the authors of {{I-D.ietf-tram-stun-origin}}
+The defintion of HOST STUN attribute was motivated by
+{{I-D.ietf-tram-stun-origin}} specification and we want to thanks the authors of
+{{I-D.ietf-tram-stun-origin}}
 
