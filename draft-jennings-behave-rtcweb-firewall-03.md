@@ -43,14 +43,19 @@ author:
 
 
 normative:
-  I-D.ietf-tram-stun-origin:
   I-D.ietf-avtcore-rfc5764-mux-fixes:
   RFC2119:
+  RFC5389:
+  RFC3629:
  
 informative:
   I-D.ietf-rtcweb-overview:
   I-D.ietf-rtcweb-stun-consent-freshness:
   RFC4787:
+  RFC6066:
+  RFC6454:
+  I-D.ietf-tram-stun-origin:
+
 
 --- abstract
 
@@ -181,10 +186,8 @@ connectivity checks, which provide a similar handshake and ensure
 consent of the remote party.
 
 The firewall looks for an initial STUN transaction to learn which
-applications is using the port (based on the STUN ORIGIN
-attribute). Next the firewall watches the outbound ICE connectivity
-check on that port and allows inbound ICE connectivity checks that are
-going to the same location that sent the outbound request and that
+application is using the port (based on the STUN HOST
+attribute {{sec-stun_host}}). Next the firewall watches the outbound ICE connectivity check on that port and allows inbound ICE connectivity checks that are going to the same location that sent the outbound request and that
 have the correct random ufrag value that was created by the client
 inside the firewall.  After a successful ICE connectivity check, the
 firewall allows other media to flow on the same 5 tuple that had the
@@ -192,7 +195,7 @@ successful ICE connectivity check.  Timers are used to removed the
 various pinholes created.
 
 In addition, the initial outbound STUN packets can contain the STUN
-ORIGIN field which the firewall can use to make an authorization
+HOST attribute which the firewall can use to make an authorization
 decision on the application.
 
 The end result is a system where:
@@ -221,7 +224,7 @@ Terminology
 The key  words defined in {{RFC2119}} are used in this specification.
 
 The term 3-tuple is used to refer to IP address, protocol (which is
-always UPD), and port that the firewall sees as the address of the
+always UDP), and port that the firewall sees as the address of the
 client inside the firewall.
 
 The term 4-tuple is used to refer to 3-tuple plus the ice ufrag that
@@ -270,10 +273,10 @@ number of false positives.
 packets as STUN packets.
 
 * CJ Proposal: Browsers MUST send the fingerprint when sending STUN
-  messages to STUN server but MAY use it when doing ICE connectivity
-  checks. This is to help save bandwidth as Justin Uberti was
-  suggesting that change from approximately 50kbps to 100 kbps for ICE
-  makes big difference for mobile devices.
+messages to STUN server but MAY use it when doing ICE connectivity
+checks. This is to help save bandwidth as Justin Uberti was
+suggesting that change from approximately 50kbps to 100 kbps for ICE
+makes big difference for mobile devices.
 
 * Do we want to discuss TURN over DTLS and using ALPN to
 detect TURN traffic along with SNI in place or the ORGIN attribute. 
@@ -282,16 +285,12 @@ detect TURN traffic along with SNI in place or the ORGIN attribute.
 Application Mapping
 -----------------
 
-The STUN ORIGIN attribute {{I-D.ietf-tram-stun-origin}} carries the
-origin of the web page that caused the various STUN requests. So for
-example, if a browser was on a page such as example.com and that page
-used the WebRTC calls to set up a connection, the STUN request's
-ORIGIN attribute would have the value example.com if the STUN server
-was named appropriately. So if a web applications such as example.com
-is starts a WebRTC session, and has appropriate named STUN servers,
-then then the firewall can detect this session is associated with
-example.com. Systems other than WebRTC can do the same thing. This
-allows the firewall to map the stun port to the application using it
+The STUN HOST attribute {{sec-stun_host}} carries the
+fully qualified domain name of host that is serving the web page 
+that caused the various STUN requests. So for example, if a browser was 
+on a page such as example.com and that page used the WebRTC calls to set 
+up a connection, the STUN request's HOST attribute would have the value 
+example.com if the STUN server was named appropriately. So if a web application such as example.com starts a WebRTC session, and has appropriate named STUN servers, then then the firewall can detect this session is associated with example.com. Systems other than WebRTC can do the same thing. This allows the firewall to map the stun port to the application using it
 and use that for logging and policy decisions.
 
 Open Issue:
@@ -302,14 +301,14 @@ claimed in above paragraph but this was agreed to at IETF 93.
 Once the Firewall receives as STUN packet from the inside to the
 outside on a new 3-tuple. It MUST create an internal record to track
 any additional traffic on this 3-tuple. If the STUN packets contains
-an ORIGIN attribute then the value it contains is saved in this record
+an HOST attribute then the value it contains is saved in this record
 and referred to as the applications name. Firewall might wish to put
 the application name in the log files for this 3-tuple.
 
 It is important to realize that any application inside the firewall
-can lie about the value of the ORIGIN attribute. However, a web
+can lie about the value of the HOST attribute. However, a web
 browser that is trusted will not allow the Javascript running in the
-web browser lie about the value of the ORIGIN. 
+web browser lie about the value of the HOST. 
 
 
 Policy decision
@@ -384,9 +383,9 @@ Open Issue: how much randomness for ICE ufrag
 browsers produce 64 bits of randomness?
 
 This specification would require browsers to include the FINGERPRINT
-and ORIGIN attributes in STUN for this to work correctly.
+and HOST attributes in STUN for this to work correctly.
 
-Open Issue: Does adding the ORIGIN reduce user privacy?
+Open Issue: Does adding the HOST reduce user privacy?
 
 * Consider the following case. The user goes to https://facebook.com
 and initiates a call with another Facebook user. The domain
@@ -399,18 +398,27 @@ facebook.com, largely for the same reasons - so that the firewall
 would be able to see which applications are using the network.
 
 * This proposal is now based on the idea that the web browser would
-only include a ORIGIN attribute when the STUN server name matched the
-name of the HTTP ORIGIN. This further reduces any privacy concerns.
+only include a HOST attribute when the STUN server name matched the
+name of the HTTP Origin header. This further reduces any privacy concerns.
 
-Open Issue:
 
-* Could redo ORIGIN based off a HOST attribute with match origin type
-  flag
+STUN HOST attribute {#sec-stun_host}
+====================
+
+This specification defines a new STUN attribute called HOST and uses 
+the syntax defined in Section 15 of {{RFC5389}}. This attribute is 
+of type comprehension-optional. The value of the HOST attribute is a
+variable length value. It MUST contain a UTF-8 {{RFC3629}} encoded sequence 
+of characters.
+
+The HOST attribute identifies the fully qualified domain name of the application provider that is serving the WebRTC application and also 
+operating the STUN server. The WebRTC EndPoint MUST include this attribute 
+as part of ICE Connectivity checks only and no other STUN usages. The contents of this attriubute MUST match the host part of the {{RFC6454}}  Origin header field for an HTTP request  generated from the web page that is creating the Peer Connection. There MUST be only one HOST attribute in a given ICE connectivty check and MUST be included before the MESSAGE-INTEGRITY attribute
+to ensure its integrity and authenticaticity.
 
 
 Deployment Advice
 =============
-
 
 WebRTC Servers
 --------------
@@ -448,7 +456,17 @@ TODO
 IANA Considerations
 ==============
 
-This draft does not require any IANA actions. 
+[Paragraphs below in braces should be removed by the RFC Editor upon
+publication]
+
+[IANA is requested to add the following attributes to the STUN
+attribute registry , the HOST attribute requires that IANA allocate a value 
+in the "STUN attributes Registry" from the comprehension-optional range 
+(0xC000 - 0xFFFF)].
+
+This document defines the HOST attribute, described
+in {{sec-stun_host}} .  IANA has allocated the comprehension-optional
+codepoint TBD for this attribute.
 
 Security Considerations 
 =================
@@ -480,6 +498,14 @@ of the firewall. The major concerns that are raised include:
 7. An encrypted data channel in WebRTC can be used by an outside
    attacker to exfiltrate private files from inside the firewall.
 
+8. The STUN HOST attribute MAY have privacy implications on that the
+hostname of the WebRTC application provider is shared with the
+STUN server which otherwise might not know this information. However,
+given that the HOST attribute value matches the hostname part of the
+HTTP Origin header and might have already been included in either the
+DNS request or as part of the TLS Handshake SNI {{RFC6066}} extension, 
+the privacy implications with its inclusion as part of ICE 
+connectivty checks are minimal or no worse.
 
 TODO - Describe to what degree theses are addressed. Be clear about attacks due
 to Javascript inside the firewall and attacks due to executables inside the
@@ -522,4 +548,6 @@ Acknowledgements
 =============
 
 Many thanks to review from Shaun Cooley, Teh Cheng, and Alissa Cooper.
+
+The defintion of HOST STUN attribute was motivated by {{I-D.ietf-tram-stun-origin}} specification and we want to thanks the authors of {{I-D.ietf-tram-stun-origin}}
 
