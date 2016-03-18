@@ -1,8 +1,8 @@
 ---
 title: Firewall Traversal for WebRTC
 abbrev: WebRTC Firewall
-docname: draft-jennings-behave-rtcweb-firewall-03
-date: 2015-10-18
+docname: draft-jennings-behave-rtcweb-firewall-04
+date: 2016-03-18
 category: info
 
 ipr: trust200902
@@ -50,7 +50,7 @@ normative:
 informative:
   I-D.ietf-avtcore-rfc5764-mux-fixes:
   I-D.ietf-rtcweb-overview:
-  I-D.ietf-rtcweb-stun-consent-freshness:
+  RFC7675:
   RFC4787:
   RFC6066:
 
@@ -347,7 +347,7 @@ The firewall continues watching ICE connectivity checks across this
 5-tuple as described in the previous paragraph and anytime the a valid
 ICE connectivity check happens, this effectively extends the lifetime of
 the pinhole by 30 seconds. The procedures in
-{{I-D.ietf-rtcweb-stun-consent-freshness}} will ensure that an ICE
+{{RFC7675}} will ensure that an ICE
 connectivity check is done more often than every 30 seconds. This is
 designed to make things work with behave compliant NATs and Firewalls as
 specified in {{RFC4787}}.
